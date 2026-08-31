@@ -261,6 +261,40 @@
   .idea-idx{font-size:9px;font-weight:700;letter-spacing:1px;color:var(--ink-3)}
   .idea-card .del{font-size:11px;padding:2px 4px}
 
+  /* ================= 06/07 工作 · 学习 ================= */
+  .todo-input{display:flex;gap:8px}
+  .todo-input input{flex:1;font-size:13.5px}
+  .cat-pick{display:flex;gap:7px;margin-bottom:10px}
+  .cat-pick button{flex:1;padding:8px 0;border:1px solid var(--line-2);background:var(--card);border-radius:9px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:all .15s}
+  .cat-pick button.on{background:var(--black);color:var(--white);border-color:var(--black)}
+  .todo-range{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px;margin:12px 0 10px}
+  .todo-range button{flex:1;padding:6px 0;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--ink-2);border-radius:7px;cursor:pointer;transition:all .2s}
+  .todo-range button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(23,23,28,.1)}
+  .todo-list{list-style:none;margin-top:4px}
+  .todo-row{display:flex;align-items:flex-start;gap:10px;padding:10px 2px;border-bottom:1px dashed var(--line);animation:rise .2s ease}
+  .todo-row:last-child{border-bottom:none}
+  .todo-check{
+    width:21px;height:21px;flex-shrink:0;margin-top:1px;border-radius:50%;
+    border:1.6px solid var(--line-2);background:var(--card);color:transparent;cursor:pointer;
+    font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;
+  }
+  .todo-check.done{background:var(--black);border-color:var(--black);color:var(--white)}
+  .todo-check:active{transform:scale(.92)}
+  .todo-main{flex:1;min-width:0}
+  .todo-text{font-size:13.5px;word-break:break-word;line-height:1.5;transition:color .15s}
+  .todo-text.done{color:var(--ink-3);text-decoration:line-through}
+  .todo-meta{font-size:10px;color:var(--ink-3);margin-top:3px;letter-spacing:.3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .cat-chip{font-size:9.5px;font-weight:700;letter-spacing:.5px;color:var(--ink-2);background:var(--card-2);border:1px solid var(--line);border-radius:5px;padding:1.5px 6px}
+  .todo-edit{display:flex;gap:7px;flex:1;min-width:0}
+  .todo-edit input{flex:1;font-size:13px;padding:7px 10px}
+  .todo-edit .btn{padding:7px 11px;font-size:11.5px}
+  .cat-mini{flex:1;padding:6px 0;border:1px solid var(--line-2);background:var(--card);border-radius:8px;font-size:12px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:all .15s}
+  .cat-mini.on{background:var(--black);color:var(--white);border-color:var(--black)}
+  .cat-mini-row{display:flex;gap:5px;margin-bottom:7px}
+  .icon-btn{background:none;border:none;color:var(--ink-3);cursor:pointer;padding:4px;border-radius:6px;line-height:1;flex-shrink:0;transition:color .15s,background .15s}
+  .icon-btn:active{color:var(--ink);background:var(--card-2)}
+  .sum-text{font-size:12.5px;color:var(--ink-2);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+
   footer{padding:26px 18px 34px;text-align:center;font-size:10px;color:var(--ink-3);letter-spacing:1.5px}
   /* ---- 云同步 ---- */
   .sync-card{margin:0 0 16px;text-align:left}
@@ -351,6 +385,14 @@
       <span>MINIMAL</span>
     </div>
     <nav class="sb-nav">
+      <button data-sec="work" aria-label="工作">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.2" width="15" height="9.6" rx="2"/><path d="M7.2 6.2 V5 a1.8 1.8 0 0 1 1.8 -1.8 h2 a1.8 1.8 0 0 1 1.8 1.8 v1.2"/><path d="M2.5 10 h15"/></svg>
+        <span>工作</span>
+      </button>
+      <button data-sec="study" aria-label="学习">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.8 h7.4 a1.8 1.8 0 0 1 1.8 1.8 v10.6 a1.8 1.8 0 0 0 -1.8 -1.8 H3.5 Z"/><path d="M12.7 5.6 h1.8 a1.8 1.8 0 0 1 1.8 1.8 v10.6 a1.8 1.8 0 0 0 -1.8 -1.8 h-1.8"/></svg>
+        <span>学习</span>
+      </button>
       <button class="on" data-sec="stock" aria-label="股票">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 15 L7.5 8.5 L11 11.5 L17 4"/><circle cx="17" cy="4" r="1.4" fill="currentColor" stroke="none"/><path d="M2.5 17.5 h15"/></svg>
         <span>股票</span>
@@ -388,6 +430,74 @@
       </div>
     </header>
     <div class="panes">
+
+      <div class="pane" id="pane-work">
+        <div class="pane-head"><span class="meta" id="workCount">今日 0 项 · 完成 0</span></div>
+        <div class="todo-input">
+          <input type="text" id="workInput" placeholder="写下今天要做的事…" maxlength="120">
+          <button class="btn small" id="addWork">＋ 新增</button>
+        </div>
+        <div class="todo-range" id="workRange">
+          <button class="on" data-f="all">全部</button>
+          <button data-f="todo">待办</button>
+          <button data-f="done">已完成</button>
+        </div>
+        <div class="card" style="padding:8px 13px">
+          <ul class="todo-list" id="workList"></ul>
+        </div>
+        <div class="card stat-card" style="margin-top:12px">
+          <div class="stat-title">总结 <span class="st-sub" id="workSummaryLabel">今日</span></div>
+          <div class="todo-range" id="workPeriod">
+            <button class="on" data-p="day">日</button>
+            <button data-p="week">周</button>
+            <button data-p="month">月</button>
+            <button data-p="year">年</button>
+          </div>
+          <div class="stat-row">
+            <div class="st-box"><span>新增</span><b id="wsNew">0</b></div>
+            <div class="st-box"><span>完成</span><b id="wsDone">0</b></div>
+            <div class="st-box"><span>完成率</span><b id="wsRate">--</b></div>
+          </div>
+          <div class="sum-text" id="workSummary"></div>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-study">
+        <div class="pane-head"><span class="meta" id="studyCount">今日 0 项 · 完成 0</span></div>
+        <div class="cat-pick" id="studyCatPick">
+          <button class="on" data-c="AI">AI</button>
+          <button data-c="股市">股市</button>
+          <button data-c="其他">其他</button>
+        </div>
+        <div class="todo-input">
+          <input type="text" id="studyInput" placeholder="学点什么?如:读《XX》第3章 / 复习K线 / 背单词…" maxlength="120">
+          <button class="btn small" id="addStudy">＋ 新增</button>
+        </div>
+        <div class="todo-range" id="studyRange">
+          <button class="on" data-f="all">全部</button>
+          <button data-f="todo">待办</button>
+          <button data-f="done">已完成</button>
+        </div>
+        <div class="card" style="padding:8px 13px">
+          <ul class="todo-list" id="studyList"></ul>
+        </div>
+        <div class="card stat-card" style="margin-top:12px">
+          <div class="stat-title">总结 <span class="st-sub" id="studySummaryLabel">今日</span></div>
+          <div class="todo-range" id="studyPeriod">
+            <button class="on" data-p="day">日</button>
+            <button data-p="week">周</button>
+            <button data-p="month">月</button>
+            <button data-p="year">年</button>
+          </div>
+          <div class="stat-row">
+            <div class="st-box"><span>新增</span><b id="ssNew">0</b></div>
+            <div class="st-box"><span>完成</span><b id="ssDone">0</b></div>
+            <div class="st-box"><span>完成率</span><b id="ssRate">--</b></div>
+          </div>
+          <div class="stat-sec"><div class="stat-sub">类目分布</div><div id="ssCat"></div></div>
+          <div class="sum-text" id="studySummary" style="margin-top:10px"></div>
+        </div>
+      </div>
 
       <div class="pane on" id="pane-stock">
         <div class="pane-head"><span class="meta" id="updateTime"></span></div>
@@ -580,7 +690,7 @@
       toast('浏览器存储不可用,数据仅保存在本次内存,请及时导出备份');
     }
   };
-  var KEYS = { bills:'wb_bills', meals:'wb_meals', ideas:'wb_ideas', notes:'wb_stock_notes', teas:'wb_teas', watch:'wb_watch' };
+  var KEYS = { bills:'wb_bills', meals:'wb_meals', ideas:'wb_ideas', notes:'wb_stock_notes', teas:'wb_teas', watch:'wb_watch', todos:'wb_todos', studies:'wb_studies' };
 
   function toast(msg){
     var t = $('toast'); t.textContent = msg; t.classList.add('show');
@@ -614,7 +724,7 @@
   })();
 
   /* ================= 左右框架切换 ================= */
-  var TITLES = { stock:'股票投资看板', bill:'极简记账本', meal:'饮食记录 · AI 建议', tea:'茶饮记录 · AI 分析', idea:'灵感捕捉器', settings:'设置 · 数据' };
+  var TITLES = { stock:'股票投资看板', bill:'极简记账本', meal:'饮食记录 · AI 建议', tea:'茶饮记录 · AI 分析', idea:'灵感捕捉器', settings:'设置 · 数据', work:'工作待办', study:'学习打卡' };
   function switchTo(sec){
     document.querySelectorAll('.sb-nav button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-sec') === sec); });
     document.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('on', p.id === 'pane-' + sec); });
@@ -1202,6 +1312,276 @@
   });
   renderTeaToday(); renderTeaHistory();
 
+  /* ================= 06 工作待办 ================= */
+  var workFilter = 'all', workPeriod = 'day';
+  var studyFilter = 'all', studyPeriod = 'day';
+  var studyCat = 'AI';
+  var editTodo = null;
+
+  function renderWorkList(){
+    var all = store.get(KEYS.todos, []);
+    var today = todayStr(), todayCount = 0, todayDone = 0;
+    all.forEach(function(t){ if(t.date === today){ todayCount++; if(t.done) todayDone++; } });
+    $('workCount').textContent = '今日 ' + todayCount + ' 项 · 完成 ' + todayDone;
+    var list = all.filter(function(t){
+      if(workFilter === 'todo') return !t.done;
+      if(workFilter === 'done') return t.done;
+      return true;
+    });
+    var box = $('workList');
+    if(!list.length){
+      box.innerHTML = '<div class="empty">' + (workFilter === 'all' ? '还没有待办 · 写下一件要做的事' : (workFilter === 'todo' ? '太棒了,待办全部清空' : '还没有已完成事项')) + '</div>';
+      return;
+    }
+    box.innerHTML = list.slice().reverse().map(function(t){
+      if(editTodo && editTodo.k === 'todo' && editTodo.ts === t.ts){
+        return '<li class="todo-row"><span class="todo-check done" style="pointer-events:none">✓</span>' +
+          '<div class="todo-edit"><input type="text" id="editInput" value="' + esc(t.text) + '" maxlength="120">' +
+          '<button class="btn small" data-act="save" data-k="todo" data-i="' + t.ts + '">保存</button>' +
+          '<button class="btn ghost small" data-act="cancel" data-k="todo">取消</button></div></li>';
+      }
+      var meta = (t.date === today ? t.time : t.date.slice(5)) + ' · ' + (t.done ? '已完成' : '待办');
+      return '<li class="todo-row">' +
+        '<button class="todo-check' + (t.done ? ' done' : '') + '" data-k="todo" data-i="' + t.ts + '" aria-label="勾选完成"></button>' +
+        '<div class="todo-main"><div class="todo-text' + (t.done ? ' done' : '') + '">' + esc(t.text) + '</div>' +
+        '<div class="todo-meta">' + meta + '</div></div>' +
+        '<button class="icon-btn" data-act="edit" data-k="todo" data-i="' + t.ts + '" title="编辑">✎</button>' +
+        '<button class="del" data-k="todo" data-i="' + t.ts + '">✕</button></li>';
+    }).join('');
+  }
+  function renderStudyList(){
+    var all = store.get(KEYS.studies, []);
+    var today = todayStr(), todayCount = 0, todayDone = 0;
+    all.forEach(function(t){ if(t.date === today){ todayCount++; if(t.done) todayDone++; } });
+    $('studyCount').textContent = '今日 ' + todayCount + ' 项 · 完成 ' + todayDone;
+    var list = all.filter(function(t){
+      if(studyFilter === 'todo') return !t.done;
+      if(studyFilter === 'done') return t.done;
+      return true;
+    });
+    var box = $('studyList');
+    if(!list.length){
+      box.innerHTML = '<div class="empty">' + (studyFilter === 'all' ? '还没有学习记录 · 新增一条开始' : (studyFilter === 'todo' ? '太棒了,学习任务全部完成' : '还没有已完成记录')) + '</div>';
+      return;
+    }
+    box.innerHTML = list.slice().reverse().map(function(t){
+      if(editTodo && editTodo.k === 'study' && editTodo.ts === t.ts){
+        var chips = ['AI','股市','其他'].map(function(c){
+          return '<button class="cat-mini' + (c === (editTodo.cat || 'AI') ? ' on' : '') + '" data-act="cat" data-k="study" data-c="' + c + '">' + c + '</button>';
+        }).join('');
+        return '<li class="todo-row"><span class="todo-check done" style="pointer-events:none">✓</span>' +
+          '<div class="todo-edit"><div class="cat-mini-row">' + chips + '</div>' +
+          '<div style="display:flex;gap:7px"><input type="text" id="editInput" value="' + esc(t.text) + '" maxlength="120">' +
+          '<button class="btn small" data-act="save" data-k="study" data-i="' + t.ts + '">保存</button>' +
+          '<button class="btn ghost small" data-act="cancel" data-k="study">取消</button></div></div></li>';
+      }
+      var meta = '<span class="cat-chip">' + esc(t.cat || '其他') + '</span>' +
+        (t.date === today ? t.time : t.date.slice(5)) + ' · ' + (t.done ? '已完成' : '待办');
+      return '<li class="todo-row">' +
+        '<button class="todo-check' + (t.done ? ' done' : '') + '" data-k="study" data-i="' + t.ts + '" aria-label="勾选完成"></button>' +
+        '<div class="todo-main"><div class="todo-text' + (t.done ? ' done' : '') + '">' + esc(t.text) + '</div>' +
+        '<div class="todo-meta">' + meta + '</div></div>' +
+        '<button class="icon-btn" data-act="edit" data-k="study" data-i="' + t.ts + '" title="编辑">✎</button>' +
+        '<button class="del" data-k="study" data-i="' + t.ts + '">✕</button></li>';
+    }).join('');
+  }
+  function toggleTodo(k, ts){
+    var key = k === 'todo' ? KEYS.todos : KEYS.studies;
+    var list = store.get(key, []);
+    var it = null;
+    list.forEach(function(x){ if(x.ts === ts) it = x; });
+    if(!it) return;
+    it.done = !it.done;
+    it.doneAt = it.done ? Date.now() : null;
+    store.set(key, list);
+    if(k === 'todo'){ renderWorkList(); renderWorkSummary(); } else { renderStudyList(); renderStudySummary(); }
+    toast(it.done ? '✔ 已完成' : '已恢复为待办'); markChanged();
+  }
+  function saveEdit(k, ts){
+    var input = $('editInput');
+    var v = input ? input.value.trim() : '';
+    if(!v){ toast('内容不能为空'); return; }
+    var key = k === 'todo' ? KEYS.todos : KEYS.studies;
+    var list = store.get(key, []);
+    var it = null;
+    list.forEach(function(x){ if(x.ts === ts) it = x; });
+    if(!it){ editTodo = null; return; }
+    it.text = v;
+    if(k === 'study' && editTodo && editTodo.cat) it.cat = editTodo.cat;
+    store.set(key, list);
+    editTodo = null;
+    if(k === 'todo'){ renderWorkList(); renderWorkSummary(); } else { renderStudyList(); renderStudySummary(); }
+    toast('已更新'); markChanged();
+  }
+  $('addWork').addEventListener('click', function(){
+    var v = $('workInput').value.trim();
+    if(!v){ toast('写下要做什么'); return; }
+    var now = new Date();
+    var list = store.get(KEYS.todos, []);
+    list.push({ text:v, done:false, date:todayStr(), time:timeStr(now.getTime()), ts:now.getTime(), doneAt:null });
+    store.set(KEYS.todos, list);
+    $('workInput').value = '';
+    renderWorkList(); renderWorkSummary(); toast('已新增待办'); markChanged();
+  });
+  $('workInput').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); $('addWork').click(); } });
+  $('workRange').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    workFilter = b.getAttribute('data-f');
+    $('workRange').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+    renderWorkList();
+  });
+  $('workPeriod').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    workPeriod = b.getAttribute('data-p');
+    $('workPeriod').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+    renderWorkSummary();
+  });
+  $('studyCatPick').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    studyCat = b.getAttribute('data-c');
+    $('studyCatPick').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+  });
+  $('addStudy').addEventListener('click', function(){
+    var v = $('studyInput').value.trim();
+    if(!v){ toast('写下学点什么'); return; }
+    var now = new Date();
+    var list = store.get(KEYS.studies, []);
+    list.push({ text:v, cat:studyCat, done:false, date:todayStr(), time:timeStr(now.getTime()), ts:now.getTime(), doneAt:null });
+    store.set(KEYS.studies, list);
+    $('studyInput').value = '';
+    renderStudyList(); renderStudySummary(); toast('已新增学习项'); markChanged();
+  });
+  $('studyInput').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); $('addStudy').click(); } });
+  $('studyRange').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    studyFilter = b.getAttribute('data-f');
+    $('studyRange').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+    renderStudyList();
+  });
+  $('studyPeriod').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    studyPeriod = b.getAttribute('data-p');
+    $('studyPeriod').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+    renderStudySummary();
+  });
+  /* ---- 总结统计(日/周/月/年) ---- */
+  var PERIOD_NAMES = { day:'今日', week:'本周', month:'本月', year:'今年' };
+  function periodStart(p){
+    var n = new Date();
+    if(p === 'day') return new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+    if(p === 'week'){ var dow = n.getDay() || 7; return new Date(n.getFullYear(), n.getMonth(), n.getDate() - (dow - 1)).getTime(); }
+    if(p === 'month') return new Date(n.getFullYear(), n.getMonth(), 1).getTime();
+    return new Date(n.getFullYear(), 0, 1).getTime();
+  }
+  function todoPeriodStats(list, p){
+    var start = periodStart(p);
+    var created = [], done = [], pending = [];
+    list.forEach(function(t){
+      if(t.ts >= start){ created.push(t); if(!t.done) pending.push(t); }
+      if(t.done && t.doneAt && t.doneAt >= start) done.push(t);
+    });
+    var doneInCreated = 0;
+    done.forEach(function(d){ if(d.ts >= start) doneInCreated++; });
+    var rate = created.length ? Math.round(doneInCreated / created.length * 100) : null;
+    return { created:created, done:done, pending:pending, rate:rate };
+  }
+  function nameList(arr, max){
+    if(!arr.length) return '';
+    var cut = max || 5;
+    var names = arr.slice(0, cut).map(function(t){ return '「' + t.text + '」'; });
+    return names.join('、') + (arr.length > cut ? ' 等 ' + arr.length + ' 项' : '');
+  }
+  function renderWorkSummary(){
+    var st = todoPeriodStats(store.get(KEYS.todos, []), workPeriod);
+    var label = PERIOD_NAMES[workPeriod];
+    $('workSummaryLabel').textContent = label;
+    $('wsNew').textContent = st.created.length;
+    $('wsDone').textContent = st.done.length;
+    $('wsRate').textContent = st.rate === null ? '--' : st.rate + '%';
+    var lines = [];
+    if(!st.created.length && !st.done.length){
+      lines.push(label + '还没有待办记录,写下一件事就开始吧。');
+    } else {
+      lines.push(label + '新增 ' + st.created.length + ' 项,完成 ' + st.done.length + ' 项,完成率 ' + (st.rate === null ? '--' : st.rate + '%') + '。');
+      if(st.done.length) lines.push('已完成:' + nameList(st.done));
+      if(st.pending.length){
+        lines.push('未完成:' + nameList(st.pending));
+        if(!st.done.length) lines.push('建议从「' + st.pending[0].text + '」开始,先完成一件再休息。');
+        else if(st.rate !== null && st.rate < 60) lines.push('完成率偏低,建议砍掉低优先级事项,聚焦最重要的 1-2 件。');
+      }
+      if(st.rate !== null && st.rate >= 80 && st.created.length) lines.push('节奏很棒,继续保持。');
+    }
+    $('workSummary').textContent = lines.join('\n');
+  }
+  function renderStudySummary(){
+    var st = todoPeriodStats(store.get(KEYS.studies, []), studyPeriod);
+    var label = PERIOD_NAMES[studyPeriod];
+    $('studySummaryLabel').textContent = label;
+    $('ssNew').textContent = st.created.length;
+    $('ssDone').textContent = st.done.length;
+    $('ssRate').textContent = st.rate === null ? '--' : st.rate + '%';
+    var cats = ['AI','股市','其他'];
+    var catData = cats.map(function(c){
+      var n = 0, d = 0;
+      st.created.forEach(function(t){ if(t.cat === c) n++; });
+      st.done.forEach(function(t){ if(t.cat === c) d++; });
+      return { cat:c, n:n, d:d };
+    });
+    var maxN = 1;
+    catData.forEach(function(x){ if(x.n > maxN) maxN = x.n; });
+    $('ssCat').innerHTML = catData.map(function(x){
+      var w = maxN ? Math.max(4, Math.round(x.n / maxN * 100)) : 0;
+      return '<div class="cat-row"><span class="cat-name">' + x.cat + '</span>' +
+        '<span class="cat-bar"><i style="width:' + w + '%"></i></span>' +
+        '<span class="cat-val">' + x.n + ' 项 · 完成 <b>' + x.d + '</b></span></div>';
+    }).join('');
+    var lines = [];
+    if(!st.created.length && !st.done.length){
+      lines.push(label + '还没有学习记录,点「＋ 新增」开始第一条。');
+    } else {
+      lines.push(label + '新增 ' + st.created.length + ' 项,完成 ' + st.done.length + ' 项,完成率 ' + (st.rate === null ? '--' : st.rate + '%') + '。');
+      var dist = catData.filter(function(x){ return x.n > 0; }).map(function(x){ return x.cat + ' ' + x.n + ' 项(完成 ' + x.d + ')'; });
+      if(dist.length) lines.push('类目:' + dist.join(' · '));
+      if(st.done.length) lines.push('已完成:' + nameList(st.done));
+      if(st.pending.length){
+        lines.push('未完成:' + nameList(st.pending));
+        if(st.rate !== null && st.rate < 60) lines.push('完成率偏低,建议一次只聚焦一个类目,学完再切换。');
+      }
+    }
+    $('studySummary').textContent = lines.join('\n');
+  }
+  /* ---- 编辑 / 勾选完成 事件委托 ---- */
+  document.addEventListener('click', function(e){
+    var ck = e.target.closest('.todo-check');
+    if(ck){ toggleTodo(ck.getAttribute('data-k'), +ck.getAttribute('data-i')); return; }
+    var b = e.target.closest('button[data-act]');
+    if(!b) return;
+    var act = b.getAttribute('data-act'), k = b.getAttribute('data-k');
+    if(act === 'edit'){
+      var ts = +b.getAttribute('data-i');
+      var key = k === 'todo' ? KEYS.todos : KEYS.studies;
+      var it = null;
+      store.get(key, []).forEach(function(x){ if(x.ts === ts) it = x; });
+      if(!it) return;
+      editTodo = { k:k, ts:ts, cat:it.cat || 'AI' };
+      if(k === 'todo') renderWorkList(); else renderStudyList();
+    } else if(act === 'save'){
+      saveEdit(k, +b.getAttribute('data-i'));
+    } else if(act === 'cancel'){
+      editTodo = null;
+      if(k === 'todo') renderWorkList(); else renderStudyList();
+    } else if(act === 'cat'){
+      if(editTodo) editTodo.cat = b.getAttribute('data-c');
+      renderStudyList();
+    }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target && e.target.id === 'editInput'){
+      e.preventDefault();
+      if(editTodo) saveEdit(editTodo.k, editTodo.ts);
+    }
+  });
+
   /* ================= 05 灵感 ================= */
   function renderIdeas(){
     var list = store.get(KEYS.ideas, []);
@@ -1237,6 +1617,8 @@
     if(k === 'idea'){ store.set(KEYS.ideas, store.get(KEYS.ideas, []).filter(function(i){ return i.ts !== ts; })); renderIdeas(); }
     if(k === 'tea'){ store.set(KEYS.teas, store.get(KEYS.teas, []).filter(function(t){ return t.ts !== ts; })); renderTeaToday(); renderTeaHistory(); }
     if(k === 'watch'){ var sid = btn.getAttribute('data-i'); store.set(KEYS.watch, store.get(KEYS.watch, []).filter(function(w){ return w.secid !== sid; })); renderWatchList(); loadIndices(); }
+    if(k === 'todo'){ if(editTodo && editTodo.ts === ts) editTodo = null; store.set(KEYS.todos, store.get(KEYS.todos, []).filter(function(t){ return t.ts !== ts; })); renderWorkList(); renderWorkSummary(); }
+    if(k === 'study'){ if(editTodo && editTodo.ts === ts) editTodo = null; store.set(KEYS.studies, store.get(KEYS.studies, []).filter(function(t){ return t.ts !== ts; })); renderStudyList(); renderStudySummary(); }
     toast('已删除'); markChanged();
   });
 
@@ -1244,7 +1626,8 @@
   $('exportBtn').addEventListener('click', function(){
     var data = { app:'minimal-daily', version:2, exportedAt:new Date().toISOString(),
       bills:store.get(KEYS.bills, []), meals:store.get(KEYS.meals, []),
-      ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []) };
+      ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []),
+      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []) };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1267,7 +1650,10 @@
         if(Array.isArray(d.notes)) store.set(KEYS.notes, d.notes);
         if(Array.isArray(d.teas)) store.set(KEYS.teas, d.teas);
         if(Array.isArray(d.watch)) store.set(KEYS.watch, d.watch);
+        if(Array.isArray(d.todos)) store.set(KEYS.todos, d.todos);
+        if(Array.isArray(d.studies)) store.set(KEYS.studies, d.studies);
         renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList();
+        renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
         loadIndices();
         toast('导入成功,数据已恢复');
         markChanged();
@@ -1281,7 +1667,8 @@
   function collectData(){
     return { app:'minimal-daily', version:2, generatedAt:new Date().toISOString(),
       bills:store.get(KEYS.bills, []), meals:store.get(KEYS.meals, []),
-      ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []) };
+      ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []),
+      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []) };
   }
   function markChanged(){ store.set('wb_last_change', Date.now()); }
   function bytesToBase64(bytes){
@@ -1364,12 +1751,13 @@
     parseSyncPayload(code).then(function(d){
       if(!d || d.app !== 'minimal-daily'){ throw new Error('bad'); }
       var total = 0;
-      ['bills','meals','ideas','notes','teas','watch'].forEach(function(k){
+      ['bills','meals','ideas','notes','teas','watch','todos','studies'].forEach(function(k){
         var merged = mergeByTs(store.get(KEYS[k], []), d[k] || []);
         store.set(KEYS[k], merged.list);
         total += merged.added;
       });
       renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList();
+      renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
       loadIndices();
       $('syncCodeIn').value = '';
       btn.disabled = false; btn.textContent = '合并到本机';
@@ -1391,7 +1779,8 @@
   /* ================= 初始渲染 ================= */
   setStoreState(storageOK);
   renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory();
-  window.addEventListener('pageshow', function(){ renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList(); });
+  renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
+  window.addEventListener('pageshow', function(){ renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList(); renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary(); });
 })();
 </script>
 </body>
