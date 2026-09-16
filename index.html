@@ -296,6 +296,143 @@
   .icon-btn:active{color:var(--ink);background:var(--card-2)}
   .sum-text{font-size:12.5px;color:var(--ink-2);line-height:1.7;white-space:pre-wrap;word-break:break-word}
 
+  /* ================= 00 今日概览 ================= */
+  .ov-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+  .ov-cell{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 13px 12px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .ov-cell .k{font-size:10.5px;color:var(--ink-3);letter-spacing:.6px;display:flex;align-items:center;gap:5px}
+  .ov-cell .k i{width:5px;height:5px;border-radius:50%;background:var(--ink-3);display:inline-block;opacity:.55}
+  .ov-cell .v{font-size:22px;font-weight:700;letter-spacing:-.6px;font-variant-numeric:tabular-nums;margin-top:7px;line-height:1.05}
+  .ov-cell .v small{font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:3px}
+  .ov-cell .s{font-size:10.5px;color:var(--ink-3);margin-top:5px;letter-spacing:.2px;line-height:1.5}
+  .ov-cell .bar{height:4px;background:var(--card-2);border-radius:3px;overflow:hidden;margin-top:9px;border:1px solid var(--line)}
+  .ov-cell .bar i{display:block;height:100%;background:var(--black);border-radius:3px;transition:width .5s}
+  .ov-wide{grid-column:span 2}
+  .ov-sec{margin-top:16px}
+  .ov-sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .ov-sec-head .t{font-size:12.5px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
+  .ov-sec-head .t::before{content:"";width:4px;height:13px;background:var(--black);border-radius:2px}
+  .ov-sec-head .a{font-size:11px;color:var(--ink-3);cursor:pointer;background:none;border:none;padding:2px 4px;letter-spacing:.3px}
+  .ov-sec-head .a:active{color:var(--ink)}
+  .ov-list{list-style:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:3px 13px;box-shadow:var(--shadow)}
+  .ov-list li{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .ov-list li:last-child{border-bottom:none}
+  .ov-li-main{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ov-li-main .sub{font-size:10px;color:var(--ink-3);margin-top:2px;letter-spacing:.2px}
+  .ov-li-val{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ov-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .ov-quick button{
+    display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;
+    background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;
+    font-size:10.5px;font-weight:600;color:var(--ink-2);letter-spacing:.3px;transition:all .15s;box-shadow:var(--shadow);
+  }
+  .ov-quick button:active{transform:scale(.96);border-color:var(--ink-3);color:var(--ink)}
+  .ov-quick svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .ov-empty{font-size:12px;color:var(--ink-3);text-align:center;padding:14px 0;letter-spacing:.3px}
+
+  /* ---- 空状态引导 ---- */
+  .empty{position:relative}
+  .empty-cta{
+    display:inline-flex;align-items:center;gap:5px;margin-top:9px;
+    background:none;border:1px solid var(--line-2);color:var(--ink-2);
+    border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;cursor:pointer;letter-spacing:.3px;
+  }
+  .empty-cta:active{transform:scale(.96);border-color:var(--ink-3);color:var(--ink)}
+  .empty-hint{font-size:10.5px;color:var(--ink-3);margin-top:8px;letter-spacing:.2px;line-height:1.6;opacity:.85}
+
+  /* ---- 预算 ---- */
+  .budget{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;box-shadow:var(--shadow);margin-top:12px}
+  .budget-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;gap:6px 10px;flex-wrap:wrap}
+  .budget-top .t{font-size:12.5px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
+  .budget-top .t::before{content:"";width:4px;height:13px;background:var(--black);border-radius:2px}
+  .budget-top .r{font-size:11px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .budget-bar{height:8px;background:var(--card-2);border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+  .budget-bar i{display:block;height:100%;background:var(--black);border-radius:5px;transition:width .5s}
+  .budget-bar.warn i{background:#c47f17}
+  .budget-bar.over i{background:var(--up)}
+  .budget-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 14px;font-size:10.5px;color:var(--ink-3);margin-top:8px;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+  .budget-meta span{white-space:nowrap}
+  .budget-note{margin-top:10px;font-size:11.5px;line-height:1.6;padding:8px 11px;border-radius:9px;background:var(--card-2);border:1px solid var(--line);color:var(--ink-2)}
+  .budget-note.warn{background:rgba(196,127,23,.10);border-color:rgba(196,127,23,.28)}
+  .budget-note.over{background:var(--up-bg);border-color:rgba(217,45,32,.28);color:var(--up)}
+  .budget-set{display:flex;gap:8px;align-items:center}
+  .budget-set input{flex:1;font-size:13px}
+  .budget-set .cur{font-size:13px;color:var(--ink-3);font-weight:600}
+
+  /* ---- 记账分类选择 ---- */
+  .cat-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+  .cat-chips button{
+    padding:6px 11px;border:1px solid var(--line-2);background:var(--card);border-radius:20px;
+    font-size:11.5px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:all .15s;white-space:nowrap;
+  }
+  .cat-chips button.on{background:var(--black);color:var(--white);border-color:var(--black)}
+  .cat-chips button.sug{border-style:dashed;color:var(--ink);background:var(--card-2)}
+  .cat-chips button:active{transform:scale(.95)}
+  .cat-hint{font-size:10.5px;color:var(--ink-3);margin:0 0 9px;letter-spacing:.2px;min-height:15px;line-height:1.5}
+  .cat-hint b{color:var(--ink-2);font-weight:600}
+  .bill-cat{font-size:9.5px;font-weight:700;color:var(--ink-2);background:var(--card-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;letter-spacing:.3px;flex-shrink:0}
+
+  /* ---- 自选股决策层 ---- */
+  .watch-item{border-bottom:1px dashed var(--line);padding:10px 2px}
+  .watch-item:last-child{border-bottom:none}
+  .watch-item .row1{display:flex;align-items:center;gap:8px}
+  .watch-item .row2{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+  .w-tags{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0;align-items:center}
+  .w-tags > span{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .w-acts{display:flex;gap:5px;align-items:center;flex-shrink:0;margin-left:auto}
+  .w-tag{font-size:9.5px;font-weight:700;color:var(--ink-2);background:var(--card-2);border:1px solid var(--line);border-radius:5px;padding:1.5px 7px;letter-spacing:.3px}
+  .w-tag.hot{color:var(--up);background:var(--up-bg);border-color:rgba(217,45,32,.22)}
+  .w-tag.cool{color:var(--down);background:var(--down-bg);border-color:rgba(7,148,85,.22)}
+  .w-tag.plan{color:var(--ink);background:var(--card);border-style:dashed}
+  .w-cfg{font-size:10px;color:var(--ink-3);background:none;border:1px solid var(--line-2);border-radius:6px;padding:2px 8px;cursor:pointer;letter-spacing:.3px}
+  .w-cfg:active{color:var(--ink);border-color:var(--ink-3)}
+  .w-edit{display:flex;flex-direction:column;gap:8px;margin-top:9px;padding:10px;background:var(--card-2);border:1px solid var(--line);border-radius:11px}
+  .w-edit-row{display:flex;gap:8px;align-items:center}
+  .w-edit-row label{font-size:10.5px;color:var(--ink-3);width:52px;flex-shrink:0;letter-spacing:.2px}
+  .w-edit-row input{flex:1;font-size:12px;padding:6px 9px}
+  .w-edit-act{display:flex;gap:7px;justify-content:flex-end}
+  .w-edit-act .btn{padding:6px 12px;font-size:11.5px}
+  .w-hint{font-size:10px;color:var(--ink-3);margin-top:4px;letter-spacing:.2px;line-height:1.5}
+  .watch-focus{background:var(--card-2);border-radius:9px;padding:7px 10px;font-size:11px;color:var(--ink-2);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .watch-focus button{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:11px;padding:2px}
+
+  /* ---- 复盘笔记标签 ---- */
+  .tag-pick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+  .tag-pick button{
+    padding:5px 11px;border:1px solid var(--line-2);background:var(--card);border-radius:20px;
+    font-size:11px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:all .15s;
+  }
+  .tag-pick button.on{background:var(--black);color:var(--white);border-color:var(--black)}
+  .tag-pick button:active{transform:scale(.95)}
+  .note-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+  .note-tag{font-size:9.5px;font-weight:700;letter-spacing:.4px;color:var(--ink-2);background:var(--card-2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+  .note-tag.stock{color:var(--ink);border-style:dashed}
+  .note-filter{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+  .note-filter button{padding:4px 10px;border:1px solid var(--line-2);background:var(--card);border-radius:20px;font-size:10.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
+  .note-filter button.on{background:var(--black);color:var(--white);border-color:var(--black)}
+
+  /* ---- 指数横滑提示 ---- */
+  .idx-wrap{position:relative}
+  .idx-wrap::after{
+    content:"";position:absolute;right:-2px;top:0;bottom:8px;width:38px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--bg));opacity:.9;transition:opacity .3s;border-radius:0 8px 8px 0;
+  }
+  .idx-wrap.at-end::after{opacity:0}
+  .idx-hint{font-size:10px;color:var(--ink-3);letter-spacing:.3px;display:flex;align-items:center;gap:5px;padding:0 2px 8px}
+  .idx-hint i{display:inline-block;width:14px;height:1px;background:var(--line-2);position:relative;vertical-align:middle}
+  .idx-hint i::after{content:"";position:absolute;right:0;top:-2px;width:4px;height:4px;border-top:1px solid var(--ink-3);border-right:1px solid var(--ink-3);transform:rotate(45deg)}
+
+  /* ---- 快捷键 ---- */
+  .kbd{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 4px;
+    font-size:9.5px;font-weight:700;font-family:ui-monospace,Menlo,monospace;color:var(--ink-2);
+    background:var(--card-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:4px}
+  .kbd-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+  .kbd-list div{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-2)}
+  /* 只让首个文字标签占满剩余宽度;按键块必须保持自身宽度,否则会被 flex:1 拉伸 */
+  .kbd-list div>span:first-child{flex:1;min-width:0}
+  .kbd-list .kbd{flex:0 0 auto}
+  .sync-age{margin-top:9px;font-size:11px;color:var(--ink-2);letter-spacing:.2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .sync-age .warn{color:var(--up);font-weight:600}
+
   footer{padding:26px 18px 34px;text-align:center;font-size:10px;color:var(--ink-3);letter-spacing:1.5px}
   /* ---- 云同步 ---- */
   .sync-card{margin:0 0 16px;text-align:left}
@@ -386,6 +523,10 @@
       <span>MINIMAL</span>
     </div>
     <nav class="sb-nav">
+      <button class="on" data-sec="overview" aria-label="概览">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="2.8" width="6.1" height="6.1" rx="1.7"/><rect x="11.1" y="2.8" width="6.1" height="6.1" rx="1.7"/><rect x="2.8" y="11.1" width="6.1" height="6.1" rx="1.7"/><rect x="11.1" y="11.1" width="6.1" height="6.1" rx="1.7"/></svg>
+        <span>概览</span>
+      </button>
       <button data-sec="work" aria-label="工作">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.2" width="15" height="9.6" rx="2"/><path d="M7.2 6.2 V5 a1.8 1.8 0 0 1 1.8 -1.8 h2 a1.8 1.8 0 0 1 1.8 1.8 v1.2"/><path d="M2.5 10 h15"/></svg>
         <span>工作</span>
@@ -394,7 +535,7 @@
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 3.8 h7.4 a1.8 1.8 0 0 1 1.8 1.8 v10.6 a1.8 1.8 0 0 0 -1.8 -1.8 H3.5 Z"/><path d="M12.7 5.6 h1.8 a1.8 1.8 0 0 1 1.8 1.8 v10.6 a1.8 1.8 0 0 0 -1.8 -1.8 h-1.8"/></svg>
         <span>学习</span>
       </button>
-      <button class="on" data-sec="stock" aria-label="股票">
+      <button data-sec="stock" aria-label="股票">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 15 L7.5 8.5 L11 11.5 L17 4"/><circle cx="17" cy="4" r="1.4" fill="currentColor" stroke="none"/><path d="M2.5 17.5 h15"/></svg>
         <span>股票</span>
       </button>
@@ -435,6 +576,88 @@
       </div>
     </header>
     <div class="panes">
+
+      <div class="pane on" id="pane-overview">
+        <div class="ov-grid">
+          <div class="ov-cell">
+            <div class="k"><i></i>今日待办</div>
+            <div class="v" id="ovTodo">--</div>
+            <div class="s" id="ovTodoSub">—</div>
+            <div class="bar"><i id="ovTodoBar" style="width:0%"></i></div>
+          </div>
+          <div class="ov-cell">
+            <div class="k"><i></i>今日支出</div>
+            <div class="v" id="ovExpense">--</div>
+            <div class="s" id="ovExpenseSub">—</div>
+          </div>
+          <div class="ov-cell">
+            <div class="k"><i></i>学习打卡</div>
+            <div class="v" id="ovStudy">--</div>
+            <div class="s" id="ovStudySub">—</div>
+          </div>
+          <div class="ov-cell">
+            <div class="k"><i></i>用药 / 茶饮</div>
+            <div class="v" id="ovHealth">--</div>
+            <div class="s" id="ovHealthSub">—</div>
+          </div>
+        </div>
+
+        <!-- 月度预算进度（设置了预算才显示） -->
+        <div class="budget" id="ovBudget" style="display:none">
+          <div class="budget-top">
+            <span class="t">本月预算</span>
+            <span class="r" id="ovBudgetR">—</span>
+          </div>
+          <div class="budget-bar" id="ovBudgetBarWrap"><i id="ovBudgetBar" style="width:0%"></i></div>
+          <div class="budget-meta">
+            <span id="ovBudgetLeft">—</span>
+            <span id="ovBudgetDaily">—</span>
+          </div>
+          <div class="budget-note" id="ovBudgetNote">—</div>
+        </div>
+
+        <div class="ov-sec">
+          <div class="ov-sec-head">
+            <span class="t">自选股异动</span>
+            <button class="a" data-goto="stock">查看全部 ›</button>
+          </div>
+          <ul class="ov-list" id="ovStocks"></ul>
+        </div>
+
+        <div class="ov-sec">
+          <div class="ov-sec-head">
+            <span class="t">待办优先</span>
+            <button class="a" data-goto="work">全部待办 ›</button>
+          </div>
+          <ul class="ov-list" id="ovTodos"></ul>
+        </div>
+
+        <div class="ov-sec">
+          <div class="ov-sec-head">
+            <span class="t">最新灵感</span>
+            <button class="a" data-goto="idea">灵感库 ›</button>
+          </div>
+          <ul class="ov-list" id="ovIdeas"></ul>
+        </div>
+
+        <div class="ov-sec">
+          <div class="ov-sec-head"><span class="t">快捷记录</span></div>
+          <div class="ov-quick">
+            <button data-goto="bill">
+              <svg viewBox="0 0 20 20"><rect x="2.5" y="4" width="15" height="12" rx="2.5"/><path d="M6 8 h4 M6 12 h8"/></svg>记一笔
+            </button>
+            <button data-goto="meal">
+              <svg viewBox="0 0 20 20"><path d="M3.5 8.5 A6.5 6.5 0 0 0 16.5 8.5 Z"/><path d="M5.5 8.5 L7.2 16.5 M10 8.5 V16.5 M14.5 8.5 L12.8 16.5"/></svg>饮食
+            </button>
+            <button data-goto="tea">
+              <svg viewBox="0 0 20 20"><path d="M4.5 4 h8 v6.2 a4 4 0 0 1 -8 0 Z"/><path d="M12.5 6 h1.6 a2.2 2.2 0 0 1 0 4.4 H12.5"/><path d="M4.5 16.5 h8"/></svg>茶饮
+            </button>
+            <button data-goto="med">
+              <svg viewBox="0 0 20 20"><rect x="3" y="8.6" width="14" height="6.6" rx="3.3"/><path d="M10 8.6 v6.6"/><path d="M13 11.4 h1.6"/></svg>用药
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div class="pane" id="pane-work">
         <div class="pane-head"><span class="meta" id="workCount">今日 0 项 · 完成 0</span></div>
@@ -504,9 +727,12 @@
         </div>
       </div>
 
-      <div class="pane on" id="pane-stock">
+      <div class="pane" id="pane-stock">
         <div class="pane-head"><span class="meta" id="updateTime"></span></div>
-    <div class="indices" id="indexList"></div>
+    <div class="idx-wrap" id="idxWrap">
+      <div class="indices" id="indexList"></div>
+    </div>
+    <div class="idx-hint"><i></i><span id="idxHintTxt">左右滑动查看全部指数</span></div>
     <div class="stock-toolbar">
       <span id="updateHint"></span>
       <button class="refresh" id="refreshBtn">↻ 刷新行情</button>
@@ -523,6 +749,7 @@
         </div>
         <ul class="watch-suggest" id="watchSuggest"></ul>
       </div>
+      <div class="watch-focus" id="watchFocus" style="display:none"></div>
       <ul class="watch-list" id="watchList"></ul>
     </div>
     <div class="card">
@@ -530,7 +757,10 @@
         <span class="t">投资复盘 / 盯盘笔记</span>
         <button class="btn small" id="saveStockNote">保存</button>
       </div>
+      <div class="tag-pick" id="noteTagPick"></div>
+      <div class="watch-focus" id="noteStockFocus" style="display:none"></div>
       <textarea id="stockNote" placeholder="记录今天的盘面情绪、交易逻辑、仓位想法…"></textarea>
+      <div class="note-filter" id="noteFilter"></div>
       <ul class="note-list" id="stockNoteList"></ul>
     </div>
   </div>
@@ -543,10 +773,27 @@
     </div>
     <div class="bill-inputs">
       <div class="bill-amt-wrap"><span class="cur">¥</span><input type="number" id="billAmount" placeholder="0.00" inputmode="decimal" step="0.01" min="0"></div>
-      <input type="text" id="billNote" placeholder="备注(可选)" maxlength="40">
+      <input type="text" id="billNote" placeholder="备注(可选),如:午餐 / 地铁 / 瑞幸" maxlength="40">
+    </div>
+    <div id="billCatWrap">
+      <div class="cat-chips" id="billCats"></div>
+      <div class="cat-hint" id="billCatHint"></div>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:9px">
       <button class="btn small" id="addBill">＋ 记一笔</button>
+    </div>
+
+    <div class="budget" id="billBudget" style="display:none">
+      <div class="budget-top">
+        <span class="t">本月预算</span>
+        <span class="r" id="budgetR">—</span>
+      </div>
+      <div class="budget-bar" id="budgetBarWrap"><i id="budgetBar" style="width:0%"></i></div>
+      <div class="budget-meta">
+        <span id="budgetLeft">—</span>
+        <span id="budgetDaily">—</span>
+      </div>
+      <div class="budget-note" id="budgetNote">—</div>
     </div>
     <div class="bill-range" id="billRange">
       <button class="on" data-r="today">今天</button>
@@ -559,7 +806,7 @@
       <div class="sum-box"><div class="label" id="lbNet">结余</div><div class="val net" id="sumNet">¥0.00</div></div>
     </div>
     <div class="card stat-card">
-      <div class="stat-title">统计分析 <span class="st-sub">按备注自动归类 · 跟随上方范围</span></div>
+      <div class="stat-title">统计分析 <span class="st-sub">手动分类优先 · 备注自动建议兜底</span></div>
       <div class="stat-row">
         <div class="st-box"><span>日均支出</span><b id="stAvg">--</b></div>
         <div class="st-box"><span>支出笔数</span><b id="stCnt">--</b></div>
@@ -679,6 +926,7 @@
             <span class="t">数据同步</span>
             <span class="st">免注册 · 设备直传</span>
           </div>
+          <div class="sync-age" id="syncAge">—</div>
           <div class="sync-actions">
             <button class="btn small" id="genSyncBtn">生成同步码</button>
             <button class="btn ghost small" id="pasteSyncBtn">粘贴同步码</button>
@@ -705,6 +953,29 @@
             <input type="file" id="importFile" accept=".json,application/json" hidden>
           </div>
           <div class="sync-tip" style="text-align:center;margin-top:10px">MINIMAL · DAILY — <span id="storeState">数据已保存在本机</span></div>
+        </div>
+
+        <div class="card" style="margin-top:10px">
+          <div class="note-head"><span class="t">记账偏好</span></div>
+          <div class="sync-tip" style="margin:0 0 9px">设置月度支出预算后,记账页会显示预算进度与超支提醒。</div>
+          <div class="budget-set">
+            <span class="cur">¥</span>
+            <input type="number" id="budgetInput" placeholder="如 6000" inputmode="decimal" step="100" min="0">
+            <button class="btn small" id="saveBudgetBtn">保存</button>
+          </div>
+          <div class="sync-tip" id="budgetState" style="margin-top:9px">未设置预算</div>
+        </div>
+
+        <div class="card" style="margin-top:10px">
+          <div class="note-head"><span class="t">键盘快捷键</span></div>
+          <div class="kbd-list">
+            <div><span>聚焦当前模块输入框</span><span class="kbd">/</span></div>
+            <div><span>按侧栏顺序切换模块</span><span class="kbd">1</span><span class="kbd">-</span><span class="kbd">9</span></div>
+            <div><span>回到今日概览</span><span class="kbd">0</span></div>
+            <div><span>关闭弹层 / 取消编辑</span><span class="kbd">Esc</span></div>
+            <div><span>刷新行情（股票页）</span><span class="kbd">R</span></div>
+          </div>
+          <div class="sync-tip" style="margin-top:10px">数字键对应侧栏图标顺序：1 概览 · 2 工作 · 3 学习 · 4 股票 · 5 记账 · 6 饮食 · 7 茶饮 · 8 药品 · 9 灵感（设置页请点击侧栏）。在输入框内输入时快捷键自动失效，不会影响打字。</div>
         </div>
       </div>
     </div><!-- /panes -->
@@ -742,7 +1013,8 @@
       toast('浏览器存储不可用,数据仅保存在本次内存,请及时导出备份');
     }
   };
-  var KEYS = { bills:'wb_bills', meals:'wb_meals', ideas:'wb_ideas', notes:'wb_stock_notes', teas:'wb_teas', watch:'wb_watch', todos:'wb_todos', studies:'wb_studies', meds:'wb_meds' };
+  var KEYS = { bills:'wb_bills', meals:'wb_meals', ideas:'wb_ideas', notes:'wb_stock_notes', teas:'wb_teas', watch:'wb_watch', todos:'wb_todos', studies:'wb_studies', meds:'wb_meds',
+    budget:'wb_budget', syncAt:'wb_sync_at', watchCfg:'wb_watch_cfg' };
 
   function toast(msg){
     var t = $('toast'); t.textContent = msg; t.classList.add('show');
@@ -776,21 +1048,217 @@
   })();
 
   /* ================= 左右框架切换 ================= */
-  var TITLES = { stock:'股票投资看板', bill:'极简记账本', meal:'饮食记录 · AI 建议', tea:'茶饮打卡', idea:'灵感捕捉器', settings:'设置 · 数据', work:'工作待办', study:'学习打卡', med:'用药记录' };
+  var TITLES = { overview:'今日概览', stock:'股票投资看板', bill:'极简记账本', meal:'饮食记录 · AI 建议', tea:'茶饮打卡', idea:'灵感捕捉器', settings:'设置 · 数据', work:'工作待办', study:'学习打卡', med:'用药记录' };
+  /* 侧栏顺序 = 数字快捷键顺序 */
+  var SEC_ORDER = ['overview','work','study','stock','bill','meal','tea','med','idea','settings'];
+  var curSec = 'overview';
   function switchTo(sec){
+    if(!TITLES[sec]) sec = 'overview';
+    curSec = sec;
     document.querySelectorAll('.sb-nav button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-sec') === sec); });
     document.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('on', p.id === 'pane-' + sec); });
     $('topTitle').textContent = TITLES[sec];
     $('stockStatus').style.display = sec === 'stock' ? 'inline-flex' : 'none';
+    if(sec === 'overview') renderOverview();
+    if(sec === 'settings') renderSyncAge();
+    var sc = document.querySelector('.panes'); if(sc) sc.scrollTop = 0;   // 切模块时回到顶部
   }
   document.querySelector('.sb-nav').addEventListener('click', function(e){
     var btn = e.target.closest('button'); if(!btn) return;
     switchTo(btn.getAttribute('data-sec'));
   });
-  switchTo('stock');
+
+  /* ================= 00 今日概览 ================= */
+  var lastQuotes = [];          // 最近一次行情快照(自选股异动用)
+  var ovTodoLimit = 4, ovIdeaLimit = 3, ovStockLimit = 5;
+
+  /* ---- 预算:记账页与概览页共用 ---- */
+  var BUDGET_IDS = {
+    ov:   { wrap:'ovBudget', r:'ovBudgetR', bar:'ovBudgetBar', barWrap:'ovBudgetBarWrap', left:'ovBudgetLeft', daily:'ovBudgetDaily', note:'ovBudgetNote' },
+    bill: { wrap:'billBudget', r:'budgetR', bar:'budgetBar', barWrap:'budgetBarWrap', left:'budgetLeft', daily:'budgetDaily', note:'budgetNote' }
+  };
+  function getBudget(){ var v = store.get(KEYS.budget, 0); return (typeof v === 'number' && v > 0) ? v : 0; }
+  function monthPrefix(){ var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
+  function monthExpense(){
+    var pre = monthPrefix();
+    return store.get(KEYS.bills, []).filter(function(b){
+      return b.type !== 'income' && String(b.date || '').indexOf(pre) === 0;
+    }).reduce(function(s, b){ return s + (+b.amount || 0); }, 0);
+  }
+  /* 返回 { budget, spent, left, ratio, daysLeft, dailyLeft, level } */
+  function budgetInfo(){
+    var budget = getBudget();
+    var spent = monthExpense();
+    var d = new Date();
+    var daysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    var daysLeft = Math.max(1, daysInMonth - d.getDate() + 1);   // 含今天
+    var left = budget - spent;
+    var ratio = budget > 0 ? spent / budget : 0;
+    var level = ratio >= 1 ? 'over' : (ratio >= 0.8 ? 'warn' : 'ok');
+    return { budget:budget, spent:spent, left:left, ratio:ratio, daysLeft:daysLeft,
+      dailyLeft:left > 0 ? left / daysLeft : 0, level:level };
+  }
+  function renderBudgetBlock(which){
+    var ids = BUDGET_IDS[which] || BUDGET_IDS.bill;
+    var wrap = $(ids.wrap); if(!wrap) return;
+    var info = budgetInfo();
+    if(!info.budget){ wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    var pct = Math.min(100, Math.round(info.ratio * 100));
+    $(ids.r).textContent = '已用 ' + pct + '%';
+    $(ids.bar).style.width = pct + '%';
+    var bw = $(ids.barWrap);
+    bw.className = 'budget-bar' + (info.level === 'over' ? ' over' : (info.level === 'warn' ? ' warn' : ''));
+    $(ids.left).textContent = info.left >= 0
+      ? ('剩余 ' + fmtMoney(info.left) + ' / ' + fmtMoney(info.budget))
+      : ('已超支 ' + fmtMoney(-info.left));
+    $(ids.daily).textContent = info.left > 0
+      ? ('本月还剩 ' + info.daysLeft + ' 天 · 日均可用 ' + fmtMoney(info.dailyLeft))
+      : ('本月还剩 ' + info.daysLeft + ' 天');
+    var note = $(ids.note);
+    if(info.level === 'over'){
+      note.className = 'budget-note over';
+      note.textContent = '⚠ 本月支出已超预算 ' + fmtMoney(-info.left) + '，后 ' + info.daysLeft + ' 天建议控制非必要开支。';
+    } else if(info.level === 'warn'){
+      note.className = 'budget-note warn';
+      note.textContent = '本月已用 ' + pct + '%，余额 ' + fmtMoney(info.left) + '。按当前节奏，日均控制在 ' + fmtMoney(info.dailyLeft) + ' 以内就不会超支。';
+    } else if(info.budget){
+      note.className = 'budget-note';
+      note.textContent = '节奏健康：已用 ' + pct + '%，剩余 ' + fmtMoney(info.left) + '，日均可用 ' + fmtMoney(info.dailyLeft) + '。';
+    }
+  }
+
+  /* ---- 概览聚合 ---- */
+  function ovQuoteMap(){
+    var map = {};
+    (lastQuotes || []).forEach(function(q){ if(q && q.f12) map[secidOf(q)] = q; });
+    return map;
+  }
+  /* 异动判定:涨跌幅绝对值 ≥3% / 量比 ≥2 / 换手率 ≥5% */
+  function quoteAlert(q){
+    if(!q) return null;
+    var chg = typeof q.f3 === 'number' ? q.f3 : null;
+    var vr  = typeof q.f10 === 'number' ? q.f10 : null;   // 量比
+    var tr  = typeof q.f8 === 'number' ? q.f8 : null;     // 换手率
+    var marks = [];
+    if(chg !== null && Math.abs(chg) >= 3) marks.push(Math.abs(chg) >= 7 ? '大幅波动' : '异动');
+    if(vr !== null && vr >= 2) marks.push('放量 ' + vr.toFixed(1) + '倍');
+    if(tr !== null && tr >= 5) marks.push('换手 ' + tr.toFixed(1) + '%');
+    return marks.length ? marks : null;
+  }
+  function renderOverview(){
+    var today = todayStr();
+    var todos  = store.get(KEYS.todos, []);
+    var studies= store.get(KEYS.studies, []);
+    var bills  = store.get(KEYS.bills, []);
+    var ideas  = store.get(KEYS.ideas, []);
+    var teas   = store.get(KEYS.teas, []);
+    var meds   = store.get(KEYS.meds, []);
+
+    /* 今日待办 */
+    var td = todos.filter(function(t){ return t.date === today; });
+    var tdDone = td.filter(function(t){ return t.done; }).length;
+    var pendingAll = todos.filter(function(t){ return !t.done; });
+    $('ovTodo').innerHTML = tdDone + '<small>/' + td.length + '</small>';
+    $('ovTodoSub').textContent = td.length
+      ? (tdDone === td.length ? '今日待办已全部完成 🎉' : ('还有 ' + (td.length - tdDone) + ' 项待办 · 累计未完成 ' + pendingAll.length + ' 项'))
+      : (pendingAll.length ? ('今天未新增 · 累计未完成 ' + pendingAll.length + ' 项') : '暂无待办，清爽的一天');
+    $('ovTodoBar').style.width = (td.length ? Math.round(tdDone / td.length * 100) : 0) + '%';
+
+    /* 今日支出 */
+    var tb = bills.filter(function(b){ return b.date === today; });
+    var exp = tb.filter(function(b){ return b.type !== 'income'; }).reduce(function(s,b){ return s + (+b.amount||0); }, 0);
+    var inc = tb.filter(function(b){ return b.type === 'income'; }).reduce(function(s,b){ return s + (+b.amount||0); }, 0);
+    $('ovExpense').textContent = fmtMoney(exp);
+    $('ovExpenseSub').textContent = tb.length
+      ? (tb.length + ' 笔记录' + (inc > 0 ? ' · 收入 ' + fmtMoney(inc) : '') + (inc > 0 ? ' · 结余 ' + fmtMoney(inc - exp) : ''))
+      : '今天还没有记账';
+
+    /* 学习打卡 */
+    var sd = studies.filter(function(s){ return s.date === today; });
+    var sdDone = sd.filter(function(s){ return s.done; }).length;
+    $('ovStudy').innerHTML = sdDone + '<small>/' + sd.length + '</small>';
+    if(sd.length){
+      var catMap = {};
+      sd.forEach(function(s){ var c = s.cat || '其他'; catMap[c] = (catMap[c] || 0) + 1; });
+      $('ovStudySub').textContent = Object.keys(catMap).map(function(c){ return c + ' ' + catMap[c]; }).join(' · ');
+    } else $('ovStudySub').textContent = '今天还没有学习记录';
+
+    /* 用药 / 茶饮 */
+    var tm = meds.filter(function(m){ return m.date === today; });
+    var tt = teas.filter(function(t){ return t.date === today; });
+    $('ovHealth').innerHTML = (tm.length + tt.length) + '<small>次</small>';
+    $('ovHealthSub').textContent = '用药 ' + tm.length + ' 次 · 茶饮 ' + tt.length + ' 次';
+
+    /* 月度预算 */
+    renderBudgetBlock('ov');
+
+    /* 自选股异动 */
+    var wBox = $('ovStocks');
+    var watch = store.get(KEYS.watch, []);
+    if(!watch.length){
+      wBox.innerHTML = '<li><div class="ov-empty">还没有自选股，去股票页添加关注</div></li>';
+    } else if(!lastQuotes.length){
+      wBox.innerHTML = '<li><div class="ov-empty">行情加载中…</div></li>';
+    } else {
+      var qm = ovQuoteMap();
+      var rows = watch.map(function(w){
+        var q = qm[w.secid];
+        var chg = q && typeof q.f3 === 'number' ? q.f3 : null;
+        return { name:w.name, code:w.code, chg:chg, alert:quoteAlert(q) };
+      }).filter(function(r){ return r.chg !== null; });
+      if(!rows.length){
+        wBox.innerHTML = '<li><div class="ov-empty">行情暂不可用，稍后点刷新试试</div></li>';
+      } else {
+        var hits = rows.filter(function(r){ return !!r.alert; });
+        var show = (hits.length ? hits : rows).slice();
+        show.sort(function(a,b){ return Math.abs(b.chg) - Math.abs(a.chg); });
+        show = show.slice(0, ovStockLimit);
+        wBox.innerHTML = show.map(function(r){
+          var cls = r.chg > 0 ? 'up' : (r.chg < 0 ? 'down' : 'flat');
+          var tag = r.alert ? '<span class="w-tag ' + (r.chg >= 0 ? 'hot' : 'cool') + '">' + esc(r.alert[0]) + '</span>' : '';
+          return '<li><div class="ov-li-main"><b>' + esc(r.name) + '</b>' + tag +
+            '<div class="sub">' + esc(r.code) + '</div></div>' +
+            '<span class="ov-li-val ' + cls + '">' + (r.chg >= 0 ? '+' : '') + r.chg.toFixed(2) + '%</span></li>';
+        }).join('');
+      }
+    }
+
+    /* 待办优先 */
+    var tBox = $('ovTodos');
+    var pend = todos.filter(function(t){ return !t.done; }).sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+    if(!pend.length){
+      tBox.innerHTML = '<li><div class="ov-empty">没有未完成的待办，保持住 ✨</div></li>';
+    } else {
+      tBox.innerHTML = pend.slice(0, ovTodoLimit).map(function(t){
+        var when = t.date === today ? ('今天 ' + t.time) : t.date.slice(5) + ' ' + t.time;
+        return '<li>' +
+          '<button class="todo-check" data-k="todo" data-i="' + t.ts + '" aria-label="勾选完成"></button>' +
+          '<div class="ov-li-main">' + esc(t.text) + '<div class="sub">' + when + '</div></div></li>';
+      }).join('');
+    }
+
+    /* 最新灵感 */
+    var iBox = $('ovIdeas');
+    var il = ideas.slice().sort(function(a,b){ return (b.ts||0) - (a.ts||0); });
+    if(!il.length){
+      iBox.innerHTML = '<li><div class="ov-empty">还没有灵感记录</div></li>';
+    } else {
+      iBox.innerHTML = il.slice(0, ovIdeaLimit).map(function(i){
+        var when = i.date === today ? ('今天 ' + i.time) : i.date.slice(5);
+        return '<li><div class="ov-li-main">' + esc(i.text) + '<div class="sub">' + when + '</div></div></li>';
+      }).join('');
+    }
+  }
+  /* 概览内跳转 + 勾选待办后刷新概览 */
+  document.addEventListener('click', function(e){
+    var g = e.target.closest('[data-goto]');
+    if(g){ switchTo(g.getAttribute('data-goto')); return; }
+    if(e.target.closest('#pane-overview .todo-check')) setTimeout(renderOverview, 0);
+  });
 
   /* ================= 01 股票看板 ================= */
-  var INDEX_FIELDS = 'f2,f3,f4,f12,f13,f14,f15,f16,f17,f18';
+  var INDEX_FIELDS = 'f2,f3,f4,f5,f6,f8,f10,f12,f13,f14,f15,f16,f17,f18';
   var INDEX_SECIDS = '1.000001,0.399001,0.399006,1.000688,1.000300,0.899050,100.HSI,124.HSTECH,100.KS11,100.N225';
   var INDEX_CODES = { '1.000001':1,'0.399001':1,'0.399006':1,'1.000688':1,'1.000300':1,'0.899050':1,'100.HSI':1,'124.HSTECH':1,'100.KS11':1,'100.N225':1 };
   function isIndex(it){ return !!INDEX_CODES[it.f13 + '.' + it.f12]; }
@@ -842,10 +1310,12 @@
   }
   function renderIndices(list){
     var box = $('indexList');
+    lastQuotes = (list && list.length) ? list : [];
     if(!list || !list.length){
       box.innerHTML = '<div class="empty" style="flex:0 0 100%">行情获取失败<br>已尝试 3 个数据源,请检查网络后点「刷新行情」重试</div>';
       $('updateHint').textContent = '';
       renderWatchQuotes([]);
+      if(curSec === 'overview') renderOverview();
       return;
     }
     var indices = list.filter(isIndex);
@@ -871,44 +1341,129 @@
     }).join('');
     var now = new Date();
     $('updateTime').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' 更新';
-    $('updateHint').textContent = 'A股·港股·亚太 · 30秒刷新 · 左滑更多';
+    $('updateHint').textContent = 'A股·港股·亚太 · 30秒自动刷新';
+    var ih = $('idxHintTxt'); if(ih) ih.textContent = '左右滑动查看全部 ' + indices.length + ' 个指数';
+    if(curSec === 'overview') renderOverview();
   }
 
   /* ---- 自选股 ---- */
+  var watchEdit = null;      // 正在展开配置的 secid
+  function watchEditHTML(w){
+    var sid = esc(w.secid);
+    return '<div class="w-edit">' +
+      '<div class="w-edit-row"><label>成本价</label><input type="number" step="0.01" id="wc_cost_' + sid + '" placeholder="买入均价" value="' + (w.cost === undefined ? '' : w.cost) + '"></div>' +
+      '<div class="w-edit-row"><label>止损位</label><input type="number" step="0.01" id="wc_stop_' + sid + '" placeholder="跌破提醒价" value="' + (w.stop === undefined ? '' : w.stop) + '"></div>' +
+      '<div class="w-edit-row"><label>止盈位</label><input type="number" step="0.01" id="wc_take_' + sid + '" placeholder="达到提醒价" value="' + (w.take === undefined ? '' : w.take) + '"></div>' +
+      '<div class="w-edit-row"><label>策略备注</label><input type="text" maxlength="16" id="wc_plan_' + sid + '" placeholder="如 3L持仓期 / 双增池观察" value="' + esc(w.plan || '') + '"></div>' +
+      '<div class="w-edit-act">' +
+        '<button class="btn small" data-act="wsave" data-i="' + sid + '">保存</button>' +
+        '<button class="btn ghost small" data-act="wcancel">取消</button>' +
+      '</div>' +
+      '<div class="w-hint">止损/止盈位用于计算当前价距离触发位的空间；策略备注会常驻显示在卡片上。</div>' +
+    '</div>';
+  }
   function renderWatchList(){
     var list = store.get(KEYS.watch, []);
     var box = $('watchList');
-    if(!list.length){ box.innerHTML = '<div class="empty">还没有自选股,点「＋ 添加自选」搜索添加</div>'; return; }
+    if(!list.length){
+      box.innerHTML = '<div class="empty">还没有自选股' +
+        '<button class="empty-cta" data-act="openadd">＋ 添加第一只自选</button>' +
+        '<div class="empty-hint">添加后可设置成本价、止损止盈位与策略备注，还能关联复盘笔记</div></div>';
+      return;
+    }
     box.innerHTML = list.map(function(w){
-      return '<li class="watch-row">' +
-        '<span class="w-name"><b>' + esc(w.name) + '</b><i>' + esc(w.code) + '</i></span>' +
-        '<span class="w-price" id="wq_' + esc(w.secid) + '">--</span>' +
-        '<span class="w-chg" id="wc_' + esc(w.secid) + '">--</span>' +
-        '<button class="del" data-k="watch" data-i="' + esc(w.secid) + '">✕</button></li>';
+      var sid = esc(w.secid);
+      var plan = w.plan ? '<span class="w-tag plan">' + esc(w.plan) + '</span>' : '';
+      var open = watchEdit === w.secid;
+      return '<li class="watch-item">' +
+        '<div class="row1">' +
+          '<span class="w-name"><b>' + esc(w.name) + '</b><i>' + esc(w.code) + '</i></span>' +
+          '<span class="w-price" id="wq_' + sid + '">--</span>' +
+          '<span class="w-chg" id="wc_' + sid + '">--</span>' +
+          '<button class="del" data-k="watch" data-i="' + sid + '">✕</button>' +
+        '</div>' +
+        '<div class="row2">' +
+          '<span class="w-tags">' + plan + '<span id="wd_' + sid + '"></span></span>' +
+          '<span class="w-acts">' +
+            '<button class="icon-btn" data-act="wnote" data-i="' + sid + '" title="关联该股复盘笔记">✎</button>' +
+            '<button class="w-cfg" data-act="wcfg" data-i="' + sid + '">' + (open ? '收起' : '设置') + '</button>' +
+          '</span>' +
+        '</div>' +
+        (open ? watchEditHTML(w) : '') +
+      '</li>';
     }).join('');
   }
   function renderWatchQuotes(quotes){
     var list = store.get(KEYS.watch, []);
     if(!list.length) return;
     var map = {};
-    quotes.forEach(function(q){ if(q && q.f12) map[secidOf(q)] = q; });
+    (quotes || []).forEach(function(q){ if(q && q.f12) map[secidOf(q)] = q; });
     list.forEach(function(w){
       var q = map[w.secid];
       var priceEl = document.getElementById('wq_' + w.secid);
       var chgEl = document.getElementById('wc_' + w.secid);
+      var detailEl = document.getElementById('wd_' + w.secid);
       if(!priceEl || !chgEl) return;
       if(!q || typeof q.f2 !== 'number'){
         priceEl.textContent = '--'; priceEl.className = 'w-price';
         chgEl.textContent = '--'; chgEl.className = 'w-chg';
+        if(detailEl) detailEl.innerHTML = '';
         return;
       }
+      var price = q.f2;
       var chg = typeof q.f3 === 'number' ? q.f3 : null;
       var cls = chg === null ? '' : (chg > 0 ? 'up' : (chg < 0 ? 'down' : 'flat'));
-      priceEl.textContent = q.f2.toFixed(2);
+      priceEl.textContent = price.toFixed(2);
       priceEl.className = 'w-price ' + cls;
       chgEl.textContent = chg === null ? '--' : ((chg >= 0 ? '▲ +' : '▼ ') + chg.toFixed(2) + '%');
       chgEl.className = 'w-chg ' + cls;
+
+      if(!detailEl) return;
+      var out = [];
+      if(typeof w.cost === 'number' && w.cost > 0){
+        var pnl = (price - w.cost) / w.cost * 100;
+        out.push('<span class="w-tag ' + (pnl >= 0 ? 'hot' : 'cool') + '">盈亏 ' + (pnl >= 0 ? '+' : '') + pnl.toFixed(1) + '%</span>');
+      }
+      if(typeof w.stop === 'number' && w.stop > 0){
+        out.push(price <= w.stop
+          ? '<span class="w-tag hot">已跌破止损 ' + w.stop + '</span>'
+          : '<span class="w-tag">距止损 ' + ((price - w.stop) / price * 100).toFixed(1) + '%</span>');
+      }
+      if(typeof w.take === 'number' && w.take > 0){
+        out.push(price >= w.take
+          ? '<span class="w-tag cool">已达止盈位 ' + w.take + '</span>'
+          : '<span class="w-tag">距止盈 ' + ((w.take - price) / price * 100).toFixed(1) + '%</span>');
+      }
+      var alert = quoteAlert(q);
+      if(alert){ out.push('<span class="w-tag ' + ((chg || 0) >= 0 ? 'hot' : 'cool') + '">' + esc(alert.join(' · ')) + '</span>'); }
+      detailEl.innerHTML = out.join('');
     });
+  }
+  /* 保存某只自选的配置 */
+  function saveWatchCfg(sid){
+    var list = store.get(KEYS.watch, []);
+    var it = null;
+    list.forEach(function(w){ if(w.secid === sid) it = w; });
+    if(!it){ watchEdit = null; renderWatchList(); return; }
+    var num = function(id){
+      var el = document.getElementById(id); if(!el) return undefined;
+      var v = parseFloat(el.value);
+      return isNaN(v) ? undefined : v;
+    };
+    var cost = num('wc_cost_' + sid), stop = num('wc_stop_' + sid), take = num('wc_take_' + sid);
+    var planEl = document.getElementById('wc_plan_' + sid);
+    var plan = planEl ? planEl.value.trim() : '';
+    if(cost === undefined) delete it.cost; else it.cost = cost;
+    if(stop === undefined) delete it.stop; else it.stop = stop;
+    if(take === undefined) delete it.take; else it.take = take;
+    if(plan) it.plan = plan; else delete it.plan;
+    it.cfgTs = Date.now();
+    store.set(KEYS.watch, list);
+    watchEdit = null;
+    renderWatchList();
+    renderWatchQuotes(lastQuotes.filter(function(x){ return !isIndex(x); }));
+    markChanged();
+    toast('已保存 ' + it.name + ' 的盯盘设置');
   }
   function searchStock(kw){
     return new Promise(function(resolve){
@@ -975,6 +1530,21 @@
   });
   renderWatchList();
 
+  /* 指数横滑:滚动到末尾时隐藏右侧渐隐提示 */
+  (function(){
+    var wrap = $('idxWrap'), list = $('indexList');
+    if(!wrap || !list) return;
+    var upd = function(){
+      var atEnd = list.scrollLeft + list.clientWidth >= list.scrollWidth - 4;
+      wrap.classList.toggle('at-end', atEnd);
+      var hint = $('idxHintTxt');
+      if(hint && list.scrollWidth <= list.clientWidth + 4) hint.textContent = '全部指数已显示';
+    };
+    list.addEventListener('scroll', upd);
+    window.addEventListener('resize', upd);
+    setTimeout(upd, 400);
+  })();
+
   function loadIndices(){
     fetchIndices().then(function(list){
       renderIndices(list); setStatusShort('');
@@ -986,13 +1556,60 @@
   loadIndices();
   setInterval(loadIndices, 30000);
 
-  /* ---- 股票笔记 ---- */
+  /* ---- 股票笔记:结构化标签 + 个股关联 ---- */
+  var NOTE_TAGS = ['情绪','操作','仓位','明日计划'];
+  var noteTags = [];             // 待保存笔记选中的标签
+  var noteFilter = '';           // 列表筛选:'' 全部 / 标签名
+  var noteStock = null;          // 关联个股 {secid,name,code}
+  var noteOnlyStock = false;     // 只看该股笔记
+
+  function renderNoteTagPick(){
+    var box = $('noteTagPick'); if(!box) return;
+    box.innerHTML = NOTE_TAGS.map(function(t){
+      return '<button data-act="notetag" data-t="' + t + '"' + (noteTags.indexOf(t) >= 0 ? ' class="on"' : '') + '>' + t + '</button>';
+    }).join('');
+    var f = $('noteStockFocus'); if(!f) return;
+    if(noteStock){
+      f.style.display = 'flex';
+      f.innerHTML = '<span>关联 <b>' + esc(noteStock.name) + '</b> ' + esc(noteStock.code) + '</span>' +
+        '<span style="display:flex;gap:6px">' +
+        '<button data-act="onlystock"' + (noteOnlyStock ? ' style="color:var(--ink);font-weight:700"' : '') + '>' + (noteOnlyStock ? '✓ 只看该股' : '只看该股') + '</button>' +
+        '<button data-act="unlinkstock">取消</button></span>';
+    } else {
+      f.style.display = 'none';
+      f.innerHTML = '';
+    }
+  }
   function renderStockNotes(){
-    var list = store.get(KEYS.notes, []);
+    renderNoteTagPick();
+    var all = store.get(KEYS.notes, []);
+    var fBox = $('noteFilter');
+    if(fBox){
+      var opts = [{ k:'', t:'全部' }].concat(NOTE_TAGS.map(function(t){ return { k:t, t:t }; }));
+      fBox.innerHTML = opts.map(function(o){
+        var cnt = o.k ? all.filter(function(n){ return (n.tags || []).indexOf(o.k) >= 0; }).length : all.length;
+        if(o.k && !cnt) return '';
+        return '<button data-act="notefilter" data-f="' + o.k + '"' + (noteFilter === o.k ? ' class="on"' : '') + '>' + o.t + (o.k ? ' ' + cnt : '') + '</button>';
+      }).join('');
+    }
+    var list = all.slice().sort(function(a,b){ return (b.ts||0) - (a.ts||0); }).filter(function(n){
+      if(noteOnlyStock && noteStock) return n.stock === noteStock.name;
+      if(!noteFilter) return true;
+      return (n.tags || []).indexOf(noteFilter) >= 0;
+    });
     var box = $('stockNoteList');
-    if(!list.length){ box.innerHTML = '<div class="empty">暂无笔记 · 记录你的盘面想法</div>'; return; }
-    box.innerHTML = list.slice().reverse().map(function(n){
+    if(!list.length){
+      box.innerHTML = '<div class="empty">' +
+        (noteOnlyStock && noteStock ? ('还没有关于 ' + esc(noteStock.name) + ' 的笔记')
+          : (noteFilter ? ('还没有「' + esc(noteFilter) + '」标签的笔记') : '暂无笔记 · 记录你的盘面想法')) +
+        '</div>';
+      return;
+    }
+    box.innerHTML = list.map(function(n){
+      var tags = (n.tags || []).map(function(t){ return '<span class="note-tag">' + esc(t) + '</span>'; }).join('');
+      var st = n.stock ? '<span class="note-tag stock">' + esc(n.stock) + '</span>' : '';
       return '<li><div class="note-text">' + esc(n.text) +
+        ((st || tags) ? '<div class="note-tags">' + st + tags + '</div>' : '') +
         '<div class="note-time">' + n.date + ' ' + n.time + '</div></div>' +
         '<button class="del" data-k="note" data-i="' + n.ts + '">✕</button></li>';
     }).join('');
@@ -1002,9 +1619,13 @@
     if(!v){ toast('先写点什么再保存'); return; }
     var now = new Date();
     var list = store.get(KEYS.notes, []);
-    list.push({ text:v, date:todayStr(), time:timeStr(now.getTime()), ts:now.getTime() });
+    var item = { text:v, date:todayStr(), time:timeStr(now.getTime()), ts:now.getTime() };
+    if(noteTags.length) item.tags = noteTags.slice();
+    if(noteStock) item.stock = noteStock.name;
+    list.push(item);
     store.set(KEYS.notes, list);
     $('stockNote').value = '';
+    noteTags = [];
     renderStockNotes(); toast('笔记已保存'); markChanged();
   });
 
@@ -1022,6 +1643,7 @@
     var btn = e.target.closest('button'); if(!btn) return;
     billType = btn.getAttribute('data-type');
     $('billType').querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === btn); });
+    $('billCatWrap').style.display = billType === 'income' ? 'none' : 'block';
   });
   $('billRange').addEventListener('click', function(e){
     var btn = e.target.closest('button'); if(!btn) return;
@@ -1050,34 +1672,67 @@
     $('todayBillCount').textContent = lb + ' ' + list.length + ' 笔';
     renderStats(list);
     var box = $('billList');
-    if(!list.length){ box.innerHTML = '<div class="empty">' + lb + '还没有账单</div>'; return; }
+    if(!list.length){
+      box.innerHTML = '<div class="empty">' + lb + '还没有账单' +
+        (billRange === 'today'
+          ? '<button class="empty-cta" data-act="gofocus" data-t="billAmount">＋ 记下第一笔</button>' +
+            '<div class="empty-hint">填金额与备注即可，分类会自动建议、也可以手动选</div>'
+          : '') + '</div>';
+      return;
+    }
     box.innerHTML = list.slice().reverse().map(function(b){
       var inc = b.type === 'income';
       var dateTxt = b.date === today ? b.time : b.date.slice(5);
       return '<li><span class="bill-dot ' + (inc ? 'd-income' : 'd-expense') + '"></span>' +
+        (inc ? '' : '<span class="bill-cat">' + esc(billCatOf(b)) + '</span>') +
         '<span class="bill-note">' + esc(b.note || '无备注') + '</span>' +
         '<span class="bill-date">' + dateTxt + '</span>' +
         '<span class="bill-amt ' + (inc ? 'a-income' : 'a-expense') + '">' + (inc ? '+' : '-') + fmtMoney(b.amount) + '</span>' +
         '<button class="del" data-k="bill" data-i="' + b.ts + '">✕</button></li>';
     }).join('');
+    renderBillCats();
+    renderBudgetBlock('bill');
+    if(curSec === 'overview') renderOverview();
   }
-  /* ---- 自动统计分析 ---- */
+  /* ---- 记账分类:手动选择为主,备注关键词仅作默认建议 ---- */
   var BILL_CATS = [
-    { name:'餐饮', tags:['餐','饭','吃','早','午','晚','外卖','奶茶','咖啡','水果','零食','菜','夜宵','早点','火锅'] },
+    { name:'餐饮', tags:['餐','饭','吃','早','午','晚','外卖','奶茶','咖啡','水果','零食','菜','夜宵','早点','火锅','瑞幸','星巴克'] },
     { name:'交通', tags:['车','地铁','公交','打车','滴滴','出租','油','停车','高铁','机票','单车','加油'] },
     { name:'购物', tags:['买','淘宝','京东','拼多多','衣','鞋','数码','超市','购物','礼物','快递'] },
     { name:'居住', tags:['房租','水电','燃气','物业','话费','宽带','家电','维修'] },
     { name:'娱乐', tags:['电影','游戏','演出','旅行','酒店','门票','健身','ktv','KTV'] },
-    { name:'医疗', tags:['药','医院','体检','看牙','诊所'] }
+    { name:'医疗', tags:['药','医院','体检','看牙','诊所'] },
+    { name:'教育', tags:['书','课','培训','学费','考试','网课','订阅'] },
+    { name:'人情', tags:['红包','份子','请客','人情','礼金'] },
+    { name:'数码', tags:['手机','电脑','耳机','相机','键盘','显示器','充电'] },
+    { name:'其他', tags:[] }
   ];
+  var BILL_CAT_NAMES = BILL_CATS.map(function(c){ return c.name; });
+  var billCat = '';                   // 当前选中的分类('' = 跟随建议/其他)
+  function catByName(n){ return BILL_CAT_NAMES.indexOf(n) >= 0 ? n : ''; }
   function categorize(note){
-    var n = note || '';
+    var n = String(note || '');
+    if(!n) return '';
     for(var i = 0; i < BILL_CATS.length; i++){
       for(var j = 0; j < BILL_CATS[i].tags.length; j++){
         if(n.indexOf(BILL_CATS[i].tags[j]) >= 0) return BILL_CATS[i].name;
       }
     }
-    return '其他';
+    return '';
+  }
+  /* 记录的最终分类:手动优先,其次备注推断,最后归入其他 */
+  function billCatOf(b){ return b.cat || categorize(b.note) || '其他'; }
+  function renderBillCats(){
+    var box = $('billCats'); if(!box) return;
+    var hint = categorize($('billNote').value.trim());
+    box.innerHTML = BILL_CAT_NAMES.map(function(c){
+      var cls = (billCat === c) ? ' class="on"' : ((!billCat && hint === c) ? ' class="sug"' : '');
+      return '<button data-act="billcat" data-c="' + c + '"' + cls + '>' + c + '</button>';
+    }).join('');
+    var h = $('billCatHint');
+    if(billCat) h.innerHTML = '已手动选择 <b>' + billCat + '</b>' + (hint && hint !== billCat ? ' · 备注建议 <b>' + hint + '</b>' : '');
+    else if(hint) h.innerHTML = '根据备注建议归入 <b>' + hint + '</b>（可点上方手动修正）';
+    else h.innerHTML = '选择分类，或留空让备注自动建议';
   }
   function renderStats(list){
     var exp = list.filter(function(b){ return b.type === 'expense'; });
@@ -1103,7 +1758,7 @@
       catBox.innerHTML = '<div class="cat-empty">暂无支出记录</div>';
     } else {
       var catMap = {};
-      exp.forEach(function(b){ var c = categorize(b.note); catMap[c] = (catMap[c] || 0) + (+b.amount || 0); });
+      exp.forEach(function(b){ var c = billCatOf(b); catMap[c] = (catMap[c] || 0) + (+b.amount || 0); });
       var cats = Object.keys(catMap).map(function(c){ return { name:c, val:catMap[c] }; })
         .sort(function(a, b){ return b.val - a.val; });
       var top = cats[0] ? cats[0].val : 0;
@@ -1143,10 +1798,25 @@
     if(isNaN(amt) || amt <= 0){ toast('请输入有效金额'); return; }
     var now = new Date();
     var list = store.get(KEYS.bills, []);
-    list.push({ type:billType, amount:Math.round(amt*100)/100, note:$('billNote').value.trim(), date:todayStr(), time:timeStr(now.getTime()), ts:now.getTime() });
+    var note = $('billNote').value.trim();
+    var item = { type:billType, amount:Math.round(amt*100)/100, note:note,
+      date:todayStr(), time:timeStr(now.getTime()), ts:now.getTime() };
+    if(billType !== 'income'){
+      var c = billCat || categorize(note);
+      if(c) item.cat = c;
+    }
+    list.push(item);
     store.set(KEYS.bills, list);
     $('billAmount').value = ''; $('billNote').value = '';
-    renderBills(); toast('已记录一笔' + (billType === 'income' ? '收入' : '支出')); markChanged();
+    billCat = '';
+    renderBills();
+    toast('已记录一笔' + (billType === 'income' ? '收入' : '支出') + (item.cat ? ' · ' + item.cat : ''));
+    markChanged();
+  });
+  /* 备注实时给出分类建议 */
+  $('billNote').addEventListener('input', function(){
+    if(billCat) return;      // 已手动选择时不打扰
+    renderBillCats();
   });
 
   /* ================= 03 饮食 ================= */
@@ -1278,7 +1948,12 @@
   function renderMealHistory(){
     var list = store.get(KEYS.meals, []);
     var box = $('mealHistory');
-    if(!list.length){ box.innerHTML = '<div class="empty">还没有饮食打卡记录</div>'; return; }
+    if(!list.length){
+      box.innerHTML = '<div class="empty">还没有饮食打卡记录' +
+        '<button class="empty-cta" data-act="gofocus" data-t="mealB">＋ 记录今天吃了什么</button>' +
+        '<div class="empty-hint">按早 / 午 / 晚 / 加餐填写，记录满 7 天会生成 AI 建议</div></div>';
+      return;
+    }
     box.innerHTML = list.slice().reverse().slice(0,10).map(function(m){
       var detail = '';
       var rows = [['早', m.breakfast], ['午', m.lunch], ['晚', m.dinner], ['加', m.snack]];
@@ -1326,7 +2001,12 @@
     var list = store.get(KEYS.teas, []);
     $('teaDate').textContent = todayStr();
     var box = $('teaHistory');
-    if(!list.length){ box.innerHTML = '<div class="empty">还没有茶饮打卡记录</div>'; return; }
+    if(!list.length){
+      box.innerHTML = '<div class="empty">还没有茶饮打卡记录' +
+        '<button class="empty-cta" data-act="gofocus" data-t="teaName">＋ 打卡第一杯茶</button>' +
+        '<div class="empty-hint">先选茶类（白 / 绿 / 乌龙 / 黑 / 黄），再填具体茶名</div></div>';
+      return;
+    }
     // 按天分组,倒序
     var days = {};
     list.forEach(function(t){ (days[t.date] = days[t.date] || []).push(t); });
@@ -1396,7 +2076,12 @@
   function renderMedHistory(){
     var list = store.get(KEYS.meds, []);
     var box = $('medHistory');
-    if(!list.length){ box.innerHTML = '<div class="empty">还没有用药记录 · 吃完顺手记一笔</div>'; return; }
+    if(!list.length){
+      box.innerHTML = '<div class="empty">还没有用药记录' +
+        '<button class="empty-cta" data-act="gofocus" data-t="medName">＋ 记录第一次用药</button>' +
+        '<div class="empty-hint">先选分类（补剂 / OTC / 处方）与时段，再填药名</div></div>';
+      return;
+    }
     var days = {};
     list.forEach(function(m){ (days[m.date] = days[m.date] || []).push(m); });
     var dates = Object.keys(days).sort().reverse().slice(0, 10);
@@ -1490,7 +2175,11 @@
     });
     var box = $('workList');
     if(!list.length){
-      box.innerHTML = '<div class="empty">' + (workFilter === 'all' ? '还没有待办 · 写下一件要做的事' : (workFilter === 'todo' ? '太棒了,待办全部清空' : '还没有已完成事项')) + '</div>';
+      if(workFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,待办全部清空 🎉</div>';
+      else if(workFilter === 'done') box.innerHTML = '<div class="empty">还没有已完成事项</div>';
+      else box.innerHTML = '<div class="empty">今天还没有待办' +
+        '<button class="empty-cta" data-act="gofocus" data-t="workInput">＋ 写第一件要做的事</button>' +
+        '<div class="empty-hint">例如「整理本周复盘」「确认交付时间」</div></div>';
       return;
     }
     box.innerHTML = list.slice().reverse().map(function(t){
@@ -1521,7 +2210,11 @@
     });
     var box = $('studyList');
     if(!list.length){
-      box.innerHTML = '<div class="empty">' + (studyFilter === 'all' ? '还没有学习记录 · 新增一条开始' : (studyFilter === 'todo' ? '太棒了,学习任务全部完成' : '还没有已完成记录')) + '</div>';
+      if(studyFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,学习任务全部完成 🎉</div>';
+      else if(studyFilter === 'done') box.innerHTML = '<div class="empty">还没有已完成记录</div>';
+      else box.innerHTML = '<div class="empty">今天还没有学习记录' +
+        '<button class="empty-cta" data-act="gofocus" data-t="studyInput">＋ 记下今天学什么</button>' +
+        '<div class="empty-hint">先选上方类目（AI / 股市 / 其他），再写下内容</div></div>';
       return;
     }
     box.innerHTML = list.slice().reverse().map(function(t){
@@ -1733,6 +2426,59 @@
     } else if(act === 'cat'){
       if(editTodo) editTodo.cat = b.getAttribute('data-c');
       renderStudyList();
+    } else if(act === 'billcat'){
+      var bc = b.getAttribute('data-c');
+      billCat = (billCat === bc) ? '' : bc;
+      renderBillCats();
+    } else if(act === 'wcfg'){
+      var wsid = b.getAttribute('data-i');
+      watchEdit = (watchEdit === wsid) ? null : wsid;
+      renderWatchList();
+      renderWatchQuotes(lastQuotes.filter(function(x){ return !isIndex(x); }));
+    } else if(act === 'wsave'){
+      saveWatchCfg(b.getAttribute('data-i'));
+    } else if(act === 'wcancel'){
+      watchEdit = null; renderWatchList();
+      renderWatchQuotes(lastQuotes.filter(function(x){ return !isIndex(x); }));
+    } else if(act === 'openadd'){
+      $('watchPanel').style.display = 'block';
+      $('watchKw').value = ''; $('watchSuggest').innerHTML = '';
+      setTimeout(function(){ $('watchKw').focus(); }, 60);
+    } else if(act === 'wnote'){
+      var nsid = b.getAttribute('data-i'), target = null;
+      store.get(KEYS.watch, []).forEach(function(w){ if(w.secid === nsid) target = w; });
+      if(target){
+        noteStock = { secid:target.secid, name:target.name, code:target.code };
+        noteOnlyStock = true;
+        noteFilter = '';
+        renderStockNotes();
+        var ta = $('stockNote');
+        if(ta){
+          ta.scrollIntoView({ behavior:'smooth', block:'center' });
+          setTimeout(function(){ ta.focus(); }, 320);
+        }
+        toast('已关联 ' + target.name + ' · 新笔记会自动带上该股');
+      }
+    } else if(act === 'notetag'){
+      var nt = b.getAttribute('data-t'), ni = noteTags.indexOf(nt);
+      if(ni >= 0) noteTags.splice(ni, 1); else noteTags.push(nt);
+      renderNoteTagPick();
+    } else if(act === 'notefilter'){
+      noteFilter = b.getAttribute('data-f');
+      noteOnlyStock = false;
+      renderStockNotes();
+    } else if(act === 'onlystock'){
+      noteOnlyStock = !noteOnlyStock;
+      renderStockNotes();
+    } else if(act === 'unlinkstock'){
+      noteStock = null; noteOnlyStock = false;
+      renderStockNotes();
+    } else if(act === 'gofocus'){
+      var tid = b.getAttribute('data-t'), el2 = tid ? $(tid) : null;
+      if(el2){
+        el2.scrollIntoView({ behavior:'smooth', block:'center' });
+        setTimeout(function(){ el2.focus(); }, 260);
+      }
     }
   });
   document.addEventListener('keydown', function(e){
@@ -1747,7 +2493,12 @@
     var list = store.get(KEYS.ideas, []);
     $('ideaCount').textContent = list.length + ' 条';
     var box = $('ideaList');
-    if(!list.length){ box.innerHTML = '<div class="empty">暂无灵感 · 随手记下第一个想法</div>'; return; }
+    if(!list.length){
+      box.innerHTML = '<div class="empty">还没有灵感记录' +
+        '<button class="empty-cta" data-act="gofocus" data-t="ideaText">＋ 捕捉第一个想法</button>' +
+        '<div class="empty-hint">一闪而过的念头、临时待办、读书随笔都可以</div></div>';
+      return;
+    }
     box.innerHTML = list.slice().reverse().map(function(i, idx){
       return '<div class="idea-card"><div class="idea-text">' + esc(i.text) + '</div>' +
         '<div class="idea-meta"><span class="idea-idx">#' + (list.length - idx) + '</span>' +
@@ -1785,10 +2536,11 @@
 
   /* ================= 备份与恢复 ================= */
   $('exportBtn').addEventListener('click', function(){
-    var data = { app:'minimal-daily', version:2, exportedAt:new Date().toISOString(),
+    var data = { app:'minimal-daily', version:3, exportedAt:new Date().toISOString(),
       bills:store.get(KEYS.bills, []), meals:store.get(KEYS.meals, []),
       ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []),
-      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []), meds:store.get(KEYS.meds, []) };
+      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []), meds:store.get(KEYS.meds, []),
+      budget:getBudget() };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1814,9 +2566,11 @@
         if(Array.isArray(d.todos)) store.set(KEYS.todos, d.todos);
         if(Array.isArray(d.studies)) store.set(KEYS.studies, d.studies);
         if(Array.isArray(d.meds)) store.set(KEYS.meds, d.meds);
+        if(typeof d.budget === 'number' && d.budget > 0) store.set(KEYS.budget, d.budget);
         renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList();
         renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
         renderMedToday(); renderMedHistory(); renderMedSummary();
+        renderBudgetSetting(); renderOverview();
         loadIndices();
         toast('导入成功,数据已恢复');
         markChanged();
@@ -1828,10 +2582,11 @@
 
   /* ================= 数据同步(免注册 · 设备直传) ================= */
   function collectData(){
-    return { app:'minimal-daily', version:2, generatedAt:new Date().toISOString(),
+    return { app:'minimal-daily', version:3, generatedAt:new Date().toISOString(),
       bills:store.get(KEYS.bills, []), meals:store.get(KEYS.meals, []),
       ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []),
-      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []), meds:store.get(KEYS.meds, []) };
+      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []), meds:store.get(KEYS.meds, []),
+      budget:getBudget() };
   }
   function markChanged(){ store.set('wb_last_change', Date.now()); }
   function bytesToBase64(bytes){
@@ -1896,6 +2651,7 @@
       $('syncCodeOut').value = code;
       btn.disabled = false; btn.textContent = '生成同步码';
       toast('同步码已生成,复制后发给另一台设备');
+      markSynced();
     });
   });
   $('copySyncBtn').addEventListener('click', function(){
@@ -1919,18 +2675,113 @@
         store.set(KEYS[k], merged.list);
         total += merged.added;
       });
+      /* 预算:本机未设置时采用同步码中的值 */
+      if(typeof d.budget === 'number' && d.budget > 0 && !getBudget()) store.set(KEYS.budget, d.budget);
       renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList();
       renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
       renderMedToday(); renderMedHistory(); renderMedSummary();
+      renderBudgetSetting(); renderOverview();
       loadIndices();
       $('syncCodeIn').value = '';
       btn.disabled = false; btn.textContent = '合并到本机';
       toast('同步完成,新增 ' + total + ' 条记录');
-      markChanged();
+      markChanged(); markSynced();
     }).catch(function(){
       btn.disabled = false; btn.textContent = '合并到本机';
       toast('同步码无法解析,请检查是否复制完整');
     });
+  });
+
+  /* ================= 同步时间追踪 ================= */
+  function markSynced(){
+    store.set(KEYS.syncAt, Date.now());
+    renderSyncAge();
+  }
+  function humanAgo(ts){
+    var s = Math.floor((Date.now() - ts) / 1000);
+    if(s < 60) return '刚刚';
+    var m = Math.floor(s / 60);
+    if(m < 60) return m + ' 分钟前';
+    var h = Math.floor(m / 60);
+    if(h < 24) return h + ' 小时前';
+    return Math.floor(h / 24) + ' 天前';
+  }
+  function renderSyncAge(){
+    var el = $('syncAge'); if(!el) return;
+    var at = store.get(KEYS.syncAt, 0);
+    var changed = store.get('wb_last_change', 0);
+    if(!at){
+      el.innerHTML = '<span class="warn">还没有同步过</span> · 建议首次使用后生成一次同步码，备份到另一台设备';
+      return;
+    }
+    var txt = '上次同步 ' + humanAgo(at);
+    el.innerHTML = (changed && changed > at)
+      ? txt + ' · <span class="warn">本机有未同步的新记录</span>'
+      : txt + ' · 数据已同步';
+  }
+
+  /* ================= 记账偏好:月预算 ================= */
+  function renderBudgetSetting(){
+    var el = $('budgetState'); if(!el) return;
+    var b = getBudget();
+    if(b){
+      el.textContent = '当前月预算 ' + fmtMoney(b) + ' · 本月已支出 ' + fmtMoney(monthExpense());
+      var inp = $('budgetInput');
+      if(inp) inp.value = b;
+    } else {
+      el.textContent = '未设置预算 · 设置后记账页与概览页会显示进度与超支提醒';
+    }
+  }
+  $('saveBudgetBtn').addEventListener('click', function(){
+    var v = parseFloat($('budgetInput').value);
+    if(isNaN(v) || v <= 0){
+      store.set(KEYS.budget, 0);
+      toast('已清除月预算');
+    } else {
+      store.set(KEYS.budget, Math.round(v * 100) / 100);
+      toast('月预算已设为 ' + fmtMoney(v));
+    }
+    renderBudgetSetting();
+    renderBudgetBlock('bill');
+    if(curSec === 'overview') renderOverview();
+  });
+  $('budgetInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); $('saveBudgetBtn').click(); }
+  });
+  setInterval(renderSyncAge, 60000);      // 相对时间每分钟刷新
+
+  /* ================= 键盘快捷键 ================= */
+  var FOCUS_IDS = { overview:null, work:'workInput', study:'studyInput', stock:'watchKw', bill:'billAmount',
+    meal:'mealB', tea:'teaName', med:'medName', idea:'ideaText', settings:'budgetInput' };
+  function isTyping(el){
+    if(!el) return false;
+    var tag = (el.tagName || '').toLowerCase();
+    return tag === 'input' || tag === 'textarea' || el.isContentEditable === true;
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.metaKey || e.ctrlKey || e.altKey) return;
+    if(isTyping(e.target)) return;                 // 输入中不劫持按键
+    if(e.key === '/'){
+      var fid = FOCUS_IDS[curSec];
+      if(fid && $(fid)){ e.preventDefault(); $(fid).scrollIntoView({ behavior:'smooth', block:'center' }); $(fid).focus(); }
+      return;
+    }
+    if(e.key === '0'){ e.preventDefault(); switchTo('overview'); return; }
+    if(e.key >= '1' && e.key <= '9'){
+      /* 数字键 = 侧栏第 N 项:1 概览 / 2 工作 / 3 学习 / 4 股票 … 9 灵感 */
+      var sec = SEC_ORDER[parseInt(e.key, 10) - 1];
+      if(sec){ e.preventDefault(); switchTo(sec); }
+      return;
+    }
+    if(e.key === 'Escape'){
+      if(watchEdit){ watchEdit = null; renderWatchList(); renderWatchQuotes(lastQuotes.filter(function(x){ return !isIndex(x); })); return; }
+      if(editTodo){ editTodo = null; renderWorkList(); renderStudyList(); return; }
+      if(noteStock){ noteStock = null; noteOnlyStock = false; renderStockNotes(); }
+      return;
+    }
+    if((e.key === 'r' || e.key === 'R') && curSec === 'stock'){
+      e.preventDefault(); loadIndices(); toast('正在刷新行情');
+    }
   });
 
   /* ================= PWA:添加到主屏幕 / 离线可用 ================= */
@@ -1943,9 +2794,19 @@
   /* ================= 初始渲染 ================= */
   setStoreState(storageOK);
   renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory();
+  renderTeaToday(); renderTeaHistory(); renderWatchList();
   renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
   renderMedToday(); renderMedHistory(); renderMedSummary();
-  window.addEventListener('pageshow', function(){ renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList(); renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary(); renderMedToday(); renderMedHistory(); renderMedSummary(); });
+  renderBudgetSetting(); renderSyncAge();
+  switchTo('overview');          // 默认打开今日概览(行情就绪后异动会自动刷新)
+  window.addEventListener('pageshow', function(){
+    renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory();
+    renderTeaToday(); renderTeaHistory(); renderWatchList();
+    renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
+    renderMedToday(); renderMedHistory(); renderMedSummary();
+    renderBudgetSetting(); renderSyncAge();
+    if(curSec === 'overview') renderOverview();
+  });
 })();
 </script>
 </body>
