@@ -463,6 +463,38 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+  /* ---- 模块底部搜索(默认收起,零视觉噪音;点一下才展开) ---- */
+  .pane-search{margin-top:26px;padding-top:15px;border-top:1px solid var(--line)}
+  .ps-toggle{
+    width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 0;
+    border:1px dashed var(--line-2);background:transparent;border-radius:10px;
+    color:var(--ink-3);font-size:11.5px;font-weight:600;letter-spacing:.4px;
+    cursor:pointer;font-family:inherit;transition:border-color .18s,color .18s,background .18s;
+  }
+  .ps-toggle:hover{border-color:var(--ink-3);color:var(--ink-2);background:var(--card-2)}
+  .ps-toggle svg{width:14px;height:14px;flex-shrink:0;stroke-width:1.8}
+  .ps-field{
+    display:none;align-items:center;gap:8px;padding:0 11px;
+    border:1px solid var(--line-2);border-radius:10px;background:var(--card);
+    transition:border-color .18s,box-shadow .18s;
+  }
+  .ps-field:focus-within{border-color:var(--ink-3);box-shadow:0 0 0 3px rgba(23,23,28,.05)}
+  .pane-search.on .ps-toggle{display:none}
+  .pane-search.on .ps-field{display:flex}
+  .ps-field>svg{width:15px;height:15px;flex-shrink:0;color:var(--ink-3);stroke-width:1.8}
+  .ps-field input{
+    flex:1;min-width:0;border:none;background:transparent;box-shadow:none;
+    padding:10px 0;font-size:13px;
+  }
+  .ps-field input:focus{box-shadow:none}
+  .ps-hint{font-size:10.5px;color:var(--ink-3);white-space:nowrap;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+  .ps-x{
+    background:none;border:none;color:var(--ink-3);cursor:pointer;padding:4px 5px;
+    font-size:12px;line-height:1;border-radius:6px;flex-shrink:0;
+  }
+  .ps-x:active{background:var(--card-2);color:var(--ink)}
+  .ps-focus{background:var(--card-2);border-radius:5px;color:var(--ink);padding:0 2px}
+
   /* ================= 左右框架布局 ================= */
   .sidebar{
     width:70px;flex-shrink:0;background:var(--hero-bg);color:var(--hero-text);
@@ -497,13 +529,60 @@
   .pane{display:none;padding:14px 16px 30px;max-width:900px;margin:0 auto;animation:paneIn .22s ease}
   @keyframes paneIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .pane.on{display:block}
+  /* ============ 手机端(≤520px):把宽度还给内容,并疏解记账页 ============ */
+  @media (max-width:520px){
+    /* 侧栏与页面留白各收窄一档 —— 375px 屏上内容宽度 258px → 约 290px */
+    .sidebar{width:56px}
+    .sb-brand{padding:16px 0 10px}
+    .sb-logo{width:23px;height:23px;margin-bottom:5px}
+    .sb-nav{padding:4px 5px 10px;gap:2px}
+    .sb-nav button{padding:10px 0 8px;gap:3px;border-radius:10px}
+    .sb-nav button svg{width:18px;height:18px}
+    .pane{padding:13px 12px 28px}
+
+    /* ---- 记账:输入区重新分配,金额不再抢备注的宽度 ---- */
+    .bill-inputs{gap:7px}
+    .bill-amt-wrap{flex:0 0 104px}
+    .bill-amt-wrap .cur{padding-left:10px}
+    .bill-amt-wrap input{font-size:15px}
+    .bill-inputs>input[type=text]{font-size:13px;padding:10px}
+
+    /* ---- 记账:汇总由 3 窄列改为「2 列 + 结余整行」,关键值不再贴边 ---- */
+    .bill-summary{grid-template-columns:1fr 1fr;gap:9px}
+    .bill-summary .sum-box:nth-child(3){
+      grid-column:1 / -1;display:flex;align-items:baseline;justify-content:space-between;
+      padding:12px 13px;
+    }
+    .bill-summary .sum-box:nth-child(3) .label{margin-bottom:0;letter-spacing:.5px}
+    .sum-box{padding:11px 12px}
+    .sum-box .label{font-size:10px;letter-spacing:.4px}
+    .sum-box .val{font-size:17px}
+
+    /* ---- 记账:账单行改两行(上行 备注+金额+删除,下行 分类 · 时间),备注不再被压成一截 ---- */
+    .bill-list li{
+      display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;
+      column-gap:9px;row-gap:4px;align-items:center;padding:12px 2px;
+    }
+    .bill-list li .bill-dot{grid-area:1 / 1}
+    .bill-list li .bill-note{grid-area:1 / 2;font-size:13px}
+    .bill-list li .bill-amt{grid-area:1 / 3}
+    .bill-list li .del{grid-area:1 / 4}
+    .bill-list li .bill-cat{grid-area:2 / 2;justify-self:start}
+    .bill-list li .bill-date{grid-area:2 / 3 / 2 / 5;justify-self:end}
+
+    /* ---- 分类 chips 与统计块留点呼吸 ---- */
+    .cat-chips{gap:7px}
+    .cat-chips button{padding:6px 12px}
+    .st-box{padding:10px 11px}
+    .stat-row{gap:7px}
+  }
   @media (max-width:340px){
-    .sidebar{width:58px}
+    .sidebar{width:52px}
     .sb-nav button span{font-size:9px}
-    .pane{padding:12px 12px 26px}
+    .pane{padding:12px 10px 26px}
     .bill-inputs{flex-wrap:wrap}
     .bill-amt-wrap{flex:0 0 100%}
-    .bill-summary .val{font-size:14.5px}
+    .bill-summary .val{font-size:15px}
   }
   @media (min-width:768px){
     .sidebar{width:94px}
@@ -688,6 +767,18 @@
           </div>
           <div class="sum-text" id="workSummary"></div>
         </div>
+        <div class="pane-search" id="workSearchWrap">
+          <button class="ps-toggle" data-act="s-open" data-k="work">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.9" cy="8.9" r="5.6"/><path d="M13.1 13.1 L17 17"/></svg>
+            <span>搜索记录</span>
+          </button>
+          <div class="ps-field">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.9" cy="8.9" r="5.6"/><path d="M13.1 13.1 L17 17"/></svg>
+            <input type="text" id="workSearch" placeholder="输入关键词…" maxlength="40">
+            <span class="ps-hint" id="workSearchHint"></span>
+            <button class="ps-x" data-act="s-clear" data-k="work" aria-label="清空">✕</button>
+          </div>
+        </div>
       </div>
 
       <div class="pane" id="pane-study">
@@ -695,6 +786,7 @@
         <div class="cat-pick" id="studyCatPick">
           <button class="on" data-c="AI">AI</button>
           <button data-c="股市">股市</button>
+          <button data-c="读书">读书</button>
           <button data-c="其他">其他</button>
         </div>
         <div class="todo-input">
@@ -724,6 +816,18 @@
           </div>
           <div class="stat-sec"><div class="stat-sub">类目分布</div><div id="ssCat"></div></div>
           <div class="sum-text" id="studySummary" style="margin-top:10px"></div>
+        </div>
+        <div class="pane-search" id="studySearchWrap">
+          <button class="ps-toggle" data-act="s-open" data-k="study">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.9" cy="8.9" r="5.6"/><path d="M13.1 13.1 L17 17"/></svg>
+            <span>搜索记录</span>
+          </button>
+          <div class="ps-field">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.9" cy="8.9" r="5.6"/><path d="M13.1 13.1 L17 17"/></svg>
+            <input type="text" id="studySearch" placeholder="输入关键词…" maxlength="40">
+            <span class="ps-hint" id="studySearchHint"></span>
+            <button class="ps-x" data-act="s-clear" data-k="study" aria-label="清空">✕</button>
+          </div>
         </div>
       </div>
 
@@ -851,7 +955,7 @@
       <button data-t="绿茶">绿茶</button>
       <button data-t="乌龙茶">乌龙茶</button>
       <button data-t="黑茶">黑茶</button>
-      <button data-t="黄茶">黄茶</button>
+      <button data-t="其他茶">其他茶</button>
     </div>
     <div class="tea-input">
       <input type="text" id="teaName" placeholder="具体茶名,如:白毫银针 / 龙井 / 铁观音…" maxlength="40">
@@ -917,6 +1021,18 @@
       <button class="btn small" id="addIdea">捕捉</button>
     </div>
     <div class="idea-list" id="ideaList"></div>
+    <div class="pane-search" id="ideaSearchWrap">
+      <button class="ps-toggle" data-act="s-open" data-k="idea">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.9" cy="8.9" r="5.6"/><path d="M13.1 13.1 L17 17"/></svg>
+        <span>搜索记录</span>
+      </button>
+      <div class="ps-field">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.9" cy="8.9" r="5.6"/><path d="M13.1 13.1 L17 17"/></svg>
+        <input type="text" id="ideaSearch" placeholder="输入关键词…" maxlength="40">
+        <span class="ps-hint" id="ideaSearchHint"></span>
+        <button class="ps-x" data-act="s-clear" data-k="idea" aria-label="清空">✕</button>
+      </div>
+    </div>
   </div>
 
       <div class="pane" id="pane-settings">
@@ -972,7 +1088,7 @@
             <div><span>聚焦当前模块输入框</span><span class="kbd">/</span></div>
             <div><span>按侧栏顺序切换模块</span><span class="kbd">1</span><span class="kbd">-</span><span class="kbd">9</span></div>
             <div><span>回到今日概览</span><span class="kbd">0</span></div>
-            <div><span>关闭弹层 / 取消编辑</span><span class="kbd">Esc</span></div>
+            <div><span>关闭弹层 / 搜索 / 取消编辑</span><span class="kbd">Esc</span></div>
             <div><span>刷新行情（股票页）</span><span class="kbd">R</span></div>
           </div>
           <div class="sync-tip" style="margin-top:10px">数字键对应侧栏图标顺序：1 概览 · 2 工作 · 3 学习 · 4 股票 · 5 记账 · 6 饮食 · 7 茶饮 · 8 药品 · 9 灵感（设置页请点击侧栏）。在输入框内输入时快捷键自动失效，不会影响打字。</div>
@@ -1990,7 +2106,7 @@
   (function(){ var m = getTodayMeal(); if(m) fillMealInputs(m); })();
 
   /* ================= 04 茶饮 ================= */
-  var TEA_TYPES = ['白茶', '绿茶', '乌龙茶', '黑茶', '黄茶'];
+  var TEA_TYPES = ['白茶', '绿茶', '乌龙茶', '黑茶', '其他茶'];
   var teaType = '白茶';
   $('teaType').addEventListener('click', function(e){
     var btn = e.target.closest('button'); if(!btn) return;
@@ -2161,6 +2277,7 @@
   var workFilter = 'all', workPeriod = 'day';
   var studyFilter = 'all', studyPeriod = 'day';
   var studyCat = 'AI';
+  var STUDY_CATS = ['AI', '股市', '读书', '其他'];
   var editTodo = null;
 
   function renderWorkList(){
@@ -2173,9 +2290,13 @@
       if(workFilter === 'done') return t.done;
       return true;
     });
+    var q = sq('work'), preCount = list.length;
+    if(q) list = list.filter(function(t){ return matchQ(t.text, q); });
+    setSearchHint('work', list.length, preCount);
     var box = $('workList');
     if(!list.length){
-      if(workFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,待办全部清空 🎉</div>';
+      if(q) box.innerHTML = searchEmptyHTML('work', searchQ.work.trim());
+      else if(workFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,待办全部清空 🎉</div>';
       else if(workFilter === 'done') box.innerHTML = '<div class="empty">还没有已完成事项</div>';
       else box.innerHTML = '<div class="empty">今天还没有待办' +
         '<button class="empty-cta" data-act="gofocus" data-t="workInput">＋ 写第一件要做的事</button>' +
@@ -2208,18 +2329,22 @@
       if(studyFilter === 'done') return t.done;
       return true;
     });
+    var q = sq('study'), preCount = list.length;
+    if(q) list = list.filter(function(t){ return matchQ(t.text, q) || matchQ(t.cat, q); });
+    setSearchHint('study', list.length, preCount);
     var box = $('studyList');
     if(!list.length){
-      if(studyFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,学习任务全部完成 🎉</div>';
+      if(q) box.innerHTML = searchEmptyHTML('study', searchQ.study.trim());
+      else if(studyFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,学习任务全部完成 🎉</div>';
       else if(studyFilter === 'done') box.innerHTML = '<div class="empty">还没有已完成记录</div>';
       else box.innerHTML = '<div class="empty">今天还没有学习记录' +
         '<button class="empty-cta" data-act="gofocus" data-t="studyInput">＋ 记下今天学什么</button>' +
-        '<div class="empty-hint">先选上方类目（AI / 股市 / 其他），再写下内容</div></div>';
+        '<div class="empty-hint">先选上方类目（AI / 股市 / 读书 / 其他），再写下内容</div></div>';
       return;
     }
     box.innerHTML = list.slice().reverse().map(function(t){
       if(editTodo && editTodo.k === 'study' && editTodo.ts === t.ts){
-        var chips = ['AI','股市','其他'].map(function(c){
+        var chips = STUDY_CATS.map(function(c){
           return '<button class="cat-mini' + (c === (editTodo.cat || 'AI') ? ' on' : '') + '" data-act="cat" data-k="study" data-c="' + c + '">' + c + '</button>';
         }).join('');
         return '<li class="todo-row"><span class="todo-check done" style="pointer-events:none">✓</span>' +
@@ -2373,7 +2498,7 @@
     $('ssNew').textContent = st.created.length;
     $('ssDone').textContent = st.done.length;
     $('ssRate').textContent = st.rate === null ? '--' : st.rate + '%';
-    var cats = ['AI','股市','其他'];
+    var cats = STUDY_CATS;
     var catData = cats.map(function(c){
       var n = 0, d = 0;
       st.created.forEach(function(t){ if(t.cat === c) n++; });
@@ -2473,6 +2598,10 @@
     } else if(act === 'unlinkstock'){
       noteStock = null; noteOnlyStock = false;
       renderStockNotes();
+    } else if(act === 's-open'){
+      openSearch(k);
+    } else if(act === 's-clear'){
+      clearOrCloseSearch(k);
     } else if(act === 'gofocus'){
       var tid = b.getAttribute('data-t'), el2 = tid ? $(tid) : null;
       if(el2){
@@ -2488,20 +2617,94 @@
     }
   });
 
+  /* ================= 模块底部搜索(工作 / 学习 / 灵感 共用) ================= */
+  var SEARCH_IDS = {
+    work:  { input:'workSearch',  hint:'workSearchHint',  wrap:'workSearchWrap'  },
+    study: { input:'studySearch', hint:'studySearchHint', wrap:'studySearchWrap' },
+    idea:  { input:'ideaSearch',  hint:'ideaSearchHint',  wrap:'ideaSearchWrap'  }
+  };
+  var searchQ = { work:'', study:'', idea:'' };
+
+  function sq(k){ return (searchQ[k] || '').trim().toLowerCase(); }
+  function matchQ(text, q){ return !q || String(text == null ? '' : text).toLowerCase().indexOf(q) >= 0; }
+
+  /* 结果计数写在输入框右侧,平时显示总数,可当"这条搜索覆盖了多少条"的参照 */
+  function setSearchHint(k, hit, total){
+    var el = $(SEARCH_IDS[k].hint);
+    if(!el) return;
+    if(!sq(k)){ el.textContent = total ? ('共 ' + total + ' 条') : ''; return; }
+    el.textContent = hit ? ('找到 ' + hit + ' 条') : '无匹配';
+  }
+  /* 搜索无结果时的空态:直接给"清空"出口,并提示受上方筛选影响 */
+  function searchEmptyHTML(k, raw){
+    return '<div class="empty">没有包含「' + esc(raw) + '」的记录' +
+      '<button class="empty-cta" data-act="s-clear" data-k="' + k + '">✕ 清空搜索</button>' +
+      '<div class="empty-hint">换个关键词；搜索会匹配全部记录，但也受上方筛选条件限制</div></div>';
+  }
+  function rerenderSearchModule(k){
+    if(k === 'work') renderWorkList();
+    else if(k === 'study') renderStudyList();
+    else renderIdeas();
+  }
+  function openSearch(k){
+    var ids = SEARCH_IDS[k];
+    $(ids.wrap).classList.add('on');
+    setTimeout(function(){ var i = $(ids.input); if(i) i.focus(); }, 40);
+  }
+  function closeSearch(k){
+    var ids = SEARCH_IDS[k];
+    searchQ[k] = '';
+    var i = $(ids.input); if(i) i.value = '';
+    var w = $(ids.wrap); if(w) w.classList.remove('on');
+    rerenderSearchModule(k);
+  }
+  /* 只清空关键词,面板保持展开 */
+  function clearSearchText(k){
+    searchQ[k] = '';
+    var i = $(SEARCH_IDS[k].input); if(i) i.value = '';
+    rerenderSearchModule(k);
+    if(i) i.focus();
+  }
+  /* 面板已展开:有关键词 → 只清空;本来就空 → 收起面板 */
+  function clearOrCloseSearch(k){
+    if(sq(k)) clearSearchText(k);
+    else closeSearch(k);
+  }
+  Object.keys(SEARCH_IDS).forEach(function(k){
+    var ids = SEARCH_IDS[k], inp = $(ids.input);
+    if(!inp) return;
+    inp.addEventListener('input', function(){
+      searchQ[k] = inp.value;
+      rerenderSearchModule(k);
+    });
+    inp.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ e.preventDefault(); closeSearch(k); }
+      if(e.key === 'Enter'){ e.preventDefault(); inp.blur(); }
+    });
+  });
+
   /* ================= 05 灵感 ================= */
   function renderIdeas(){
     var list = store.get(KEYS.ideas, []);
     $('ideaCount').textContent = list.length + ' 条';
+    /* 带原始序号一起收集:筛选后 #N 仍是这条灵感在全量里的编号 */
+    var q = sq('idea'), items = [];
+    list.forEach(function(it, idx){
+      if(!q || matchQ(it.text, q)) items.push({ it:it, no: idx + 1 });
+    });
+    setSearchHint('idea', items.length, list.length);
     var box = $('ideaList');
-    if(!list.length){
+    if(!items.length){
+      if(q){ box.innerHTML = searchEmptyHTML('idea', searchQ.idea.trim()); return; }
       box.innerHTML = '<div class="empty">还没有灵感记录' +
         '<button class="empty-cta" data-act="gofocus" data-t="ideaText">＋ 捕捉第一个想法</button>' +
         '<div class="empty-hint">一闪而过的念头、临时待办、读书随笔都可以</div></div>';
       return;
     }
-    box.innerHTML = list.slice().reverse().map(function(i, idx){
+    box.innerHTML = items.slice().reverse().map(function(row){
+      var i = row.it;
       return '<div class="idea-card"><div class="idea-text">' + esc(i.text) + '</div>' +
-        '<div class="idea-meta"><span class="idea-idx">#' + (list.length - idx) + '</span>' +
+        '<div class="idea-meta"><span class="idea-idx">#' + row.no + '</span>' +
         '<span>' + i.time + ' · ' + i.date.slice(5) + '</span>' +
         '<button class="del" data-k="idea" data-i="' + i.ts + '">✕</button></div></div>';
     }).join('');
@@ -2762,6 +2965,14 @@
     if(e.metaKey || e.ctrlKey || e.altKey) return;
     if(isTyping(e.target)) return;                 // 输入中不劫持按键
     if(e.key === '/'){
+      /* 搜索面板已展开时,斜杠优先聚焦搜索框 */
+      var sids = SEARCH_IDS[curSec];
+      if(sids && $(sids.wrap) && $(sids.wrap).classList.contains('on')){
+        e.preventDefault();
+        $(sids.input).scrollIntoView({ behavior:'smooth', block:'center' });
+        $(sids.input).focus();
+        return;
+      }
       var fid = FOCUS_IDS[curSec];
       if(fid && $(fid)){ e.preventDefault(); $(fid).scrollIntoView({ behavior:'smooth', block:'center' }); $(fid).focus(); }
       return;
@@ -2774,6 +2985,8 @@
       return;
     }
     if(e.key === 'Escape'){
+      var escS = SEARCH_IDS[curSec];
+      if(escS && $(escS.wrap) && $(escS.wrap).classList.contains('on')){ closeSearch(curSec); return; }
       if(watchEdit){ watchEdit = null; renderWatchList(); renderWatchQuotes(lastQuotes.filter(function(x){ return !isIndex(x); })); return; }
       if(editTodo){ editTodo = null; renderWorkList(); renderStudyList(); return; }
       if(noteStock){ noteStock = null; noteOnlyStock = false; renderStockNotes(); }
@@ -2790,6 +3003,15 @@
       navigator.serviceWorker.register('sw.js').catch(function(){});
     });
   }
+
+  /* ================= 数据迁移 ================= */
+  /* 茶饮类目「黄茶」已并入「其他茶」,旧的本地记录一并改写,避免历史统计里出现已废弃类目 */
+  (function migrateTeaTypes(){
+    var list = store.get(KEYS.teas, []);
+    var hit = 0;
+    list.forEach(function(t){ if(t.type === '黄茶'){ t.type = '其他茶'; hit++; } });
+    if(hit){ store.set(KEYS.teas, list); }
+  })();
 
   /* ================= 初始渲染 ================= */
   setStoreState(storageOK);
