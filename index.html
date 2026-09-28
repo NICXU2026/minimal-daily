@@ -156,9 +156,10 @@
   .bill-amt-wrap input{border:none;box-shadow:none;padding-left:4px;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
   .bill-amt-wrap:focus-within{border-color:var(--ink-3);box-shadow:0 0 0 3px rgba(23,23,28,.05)}
   .bill-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0 10px}
-  .bill-range{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px;margin:12px 0 2px}
-  .bill-range button{flex:1;padding:6px 0;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--ink-2);border-radius:7px;cursor:pointer;transition:all .2s}
-  .bill-range button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(23,23,28,.1)}
+  /* .seg-sm = 同组件的「小号」：周期选择器(日/周/月/季/年)与筛选组(全部/未完成/已完成)共用 */
+  .seg-sm{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px;margin:12px 0 10px}
+  .seg-sm button{flex:1;padding:6px 0;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--ink-2);border-radius:7px;cursor:pointer;transition:all .2s;white-space:nowrap}
+  .seg-sm button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(23,23,28,.1)}
   /* ---- 记账统计分析 ---- */
   .stat-card{margin:0 0 10px;padding:13px}
   .stat-title{font-size:12.5px;font-weight:700;letter-spacing:.5px;display:flex;align-items:baseline;gap:8px;margin-bottom:11px}
@@ -268,9 +269,6 @@
   .cat-pick{display:flex;gap:7px;margin-bottom:10px}
   .cat-pick button{flex:1;padding:8px 0;border:1px solid var(--line-2);background:var(--card);border-radius:9px;font-size:12.5px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:all .15s}
   .cat-pick button.on{background:var(--black);color:var(--white);border-color:var(--black)}
-  .todo-range{display:flex;background:var(--card-2);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px;margin:12px 0 10px}
-  .todo-range button{flex:1;padding:6px 0;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--ink-2);border-radius:7px;cursor:pointer;transition:all .2s}
-  .todo-range button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(23,23,28,.1)}
   .todo-list{list-style:none;margin-top:4px}
   .todo-row{display:flex;align-items:flex-start;gap:10px;padding:10px 2px;border-bottom:1px dashed var(--line);animation:rise .2s ease}
   .todo-row:last-child{border-bottom:none}
@@ -425,31 +423,10 @@
   .kbd{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 4px;
     font-size:9.5px;font-weight:700;font-family:ui-monospace,Menlo,monospace;color:var(--ink-2);
     background:var(--card-2);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:4px}
-  .kbd-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
-  .kbd-list div{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-2)}
-  /* 只让首个文字标签占满剩余宽度;按键块必须保持自身宽度,否则会被 flex:1 拉伸 */
-  .kbd-list div>span:first-child{flex:1;min-width:0}
-  .kbd-list .kbd{flex:0 0 auto}
-  .sync-age{margin-top:9px;font-size:11px;color:var(--ink-2);letter-spacing:.2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .sync-age .warn{color:var(--up);font-weight:600}
 
   footer{padding:26px 18px 34px;text-align:center;font-size:10px;color:var(--ink-3);letter-spacing:1.5px}
-  /* ---- 云同步 ---- */
-  .sync-card{margin:0 0 16px;text-align:left}
-  .sync-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .sync-head .t{font-size:12.5px;font-weight:700;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
-  .sync-head .t::before{content:"";width:4px;height:14px;background:var(--black);border-radius:2px}
-  .sync-head .st{font-size:10.5px;color:var(--ink-3)}
-  .sync-row2{display:flex;gap:8px}
-  .sync-row2 input{flex:1;font-size:12.5px}
-  .sync-actions{display:flex;gap:8px;margin-top:10px}
-  .sync-actions .btn{flex:1;padding:7px 8px;font-size:11.5px}
-  .sync-code{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--ink-2)}
-  .sync-code code{flex:1;font-size:10px;background:var(--card-2);border:1px solid var(--line);border-radius:7px;padding:6px 9px;word-break:break-all;color:var(--ink)}
-  .sync-code .btn{padding:6px 10px;font-size:11px}
   .sync-tip{font-size:10px;color:var(--ink-3);line-height:1.6;margin-top:10px;letter-spacing:.2px}
   .sync-tip a{color:var(--ink-2)}
-  .sync-busy{opacity:.55;pointer-events:none}
   .sync-row{display:flex;justify-content:center;gap:10px;margin-bottom:12px}
   .sync-row button{
     border:1px solid var(--line-2);background:var(--card);color:var(--ink-2);border-radius:9px;
@@ -744,7 +721,7 @@
           <input type="text" id="workInput" placeholder="写下今天要做的事…" maxlength="120">
           <button class="btn small" id="addWork">＋ 新增</button>
         </div>
-        <div class="todo-range" id="workRange">
+        <div class="seg-sm" id="workRange">
           <button class="on" data-f="all">全部</button>
           <button data-f="todo">待办</button>
           <button data-f="done">已完成</button>
@@ -754,10 +731,11 @@
         </div>
         <div class="card stat-card" style="margin-top:12px">
           <div class="stat-title">总结 <span class="st-sub" id="workSummaryLabel">今日</span></div>
-          <div class="todo-range" id="workPeriod">
+          <div class="seg-sm" id="workPeriod">
             <button class="on" data-p="day">日</button>
             <button data-p="week">周</button>
             <button data-p="month">月</button>
+            <button data-p="quarter">季</button>
             <button data-p="year">年</button>
           </div>
           <div class="stat-row">
@@ -793,7 +771,7 @@
           <input type="text" id="studyInput" placeholder="学点什么?如:读《XX》第3章 / 复习K线 / 背单词…" maxlength="120">
           <button class="btn small" id="addStudy">＋ 新增</button>
         </div>
-        <div class="todo-range" id="studyRange">
+        <div class="seg-sm" id="studyRange">
           <button class="on" data-f="all">全部</button>
           <button data-f="todo">待办</button>
           <button data-f="done">已完成</button>
@@ -803,10 +781,11 @@
         </div>
         <div class="card stat-card" style="margin-top:12px">
           <div class="stat-title">总结 <span class="st-sub" id="studySummaryLabel">今日</span></div>
-          <div class="todo-range" id="studyPeriod">
+          <div class="seg-sm" id="studyPeriod">
             <button class="on" data-p="day">日</button>
             <button data-p="week">周</button>
             <button data-p="month">月</button>
+            <button data-p="quarter">季</button>
             <button data-p="year">年</button>
           </div>
           <div class="stat-row">
@@ -899,18 +878,20 @@
       </div>
       <div class="budget-note" id="budgetNote">—</div>
     </div>
-    <div class="bill-range" id="billRange">
-      <button class="on" data-r="today">今天</button>
-      <button data-r="7d">近7天</button>
-      <button data-r="all">全部</button>
+    <div class="seg-sm" id="billPeriod">
+      <button data-p="day">日</button>
+      <button data-p="week">周</button>
+      <button class="on" data-p="month">月</button>
+      <button data-p="quarter">季</button>
+      <button data-p="year">年</button>
     </div>
     <div class="bill-summary">
-      <div class="sum-box"><div class="label" id="lbIncome">今日收入</div><div class="val income" id="sumIncome">¥0.00</div></div>
-      <div class="sum-box"><div class="label" id="lbExpense">今日支出</div><div class="val expense" id="sumExpense">¥0.00</div></div>
+      <div class="sum-box"><div class="label" id="lbIncome">本月收入</div><div class="val income" id="sumIncome">¥0.00</div></div>
+      <div class="sum-box"><div class="label" id="lbExpense">本月支出</div><div class="val expense" id="sumExpense">¥0.00</div></div>
       <div class="sum-box"><div class="label" id="lbNet">结余</div><div class="val net" id="sumNet">¥0.00</div></div>
     </div>
     <div class="card stat-card">
-      <div class="stat-title">统计分析 <span class="st-sub">手动分类优先 · 备注自动建议兜底</span></div>
+      <div class="stat-title">统计分析 <span class="st-sub" id="billStatSub">本月 · 手动分类优先</span></div>
       <div class="stat-row">
         <div class="st-box"><span>日均支出</span><b id="stAvg">--</b></div>
         <div class="st-box"><span>支出笔数</span><b id="stCnt">--</b></div>
@@ -943,6 +924,28 @@
       <button class="btn small" id="aiAdvice">✦ AI 饮食建议</button>
     </div>
     <div id="aiResult"></div>
+
+    <div class="seg-sm" id="mealPeriod">
+      <button data-p="day">日</button>
+      <button class="on" data-p="week">周</button>
+      <button data-p="month">月</button>
+      <button data-p="quarter">季</button>
+      <button data-p="year">年</button>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-title">总结 <span class="st-sub" id="mealSummaryLabel">本周</span></div>
+      <div class="stat-row">
+        <div class="st-box"><span>打卡天数</span><b id="mealSumDays">0</b></div>
+        <div class="st-box"><span>已记餐次</span><b id="mealSumMeals">0</b></div>
+        <div class="st-box"><span>全天记全</span><b id="mealSumFull">0</b></div>
+      </div>
+      <div class="stat-sec">
+        <div class="stat-sub">各餐段填写次数</div>
+        <div id="mealSumBars"></div>
+      </div>
+      <div class="sum-text" id="mealSumText" style="margin-top:10px"></div>
+    </div>
+
     <div class="card" style="padding:10px 13px;margin-top:6px">
       <div class="meal-history" id="mealHistory"></div>
     </div>
@@ -962,6 +965,28 @@
       <button class="btn small" id="addTea">打卡</button>
     </div>
     <div class="tea-today" id="teaTodayTags"></div>
+
+    <div class="seg-sm" id="teaPeriod">
+      <button data-p="day">日</button>
+      <button class="on" data-p="week">周</button>
+      <button data-p="month">月</button>
+      <button data-p="quarter">季</button>
+      <button data-p="year">年</button>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-title">总结 <span class="st-sub" id="teaSumLabel">本周</span></div>
+      <div class="stat-row">
+        <div class="st-box"><span>饮茶杯数</span><b id="teaSumCups">0</b></div>
+        <div class="st-box"><span>打卡天数</span><b id="teaSumDays">0</b></div>
+        <div class="st-box"><span>品类数</span><b id="teaSumKinds">0</b></div>
+      </div>
+      <div class="stat-sec">
+        <div class="stat-sub">茶类分布</div>
+        <div id="teaSumBars"></div>
+      </div>
+      <div class="sum-text" id="teaSumText" style="margin-top:10px"></div>
+    </div>
+
     <div class="card" style="padding:10px 13px;margin-top:6px">
       <div class="meal-history" id="teaHistory"></div>
     </div>
@@ -988,10 +1013,11 @@
         <div class="med-today" id="medTodayTags"></div>
         <div class="card stat-card" style="margin-top:12px">
           <div class="stat-title">总结 <span class="st-sub" id="medSummaryLabel">今日</span></div>
-          <div class="todo-range" id="medPeriod">
+          <div class="seg-sm" id="medPeriod">
             <button class="on" data-p="day">日</button>
             <button data-p="week">周</button>
             <button data-p="month">月</button>
+            <button data-p="quarter">季</button>
             <button data-p="year">年</button>
           </div>
           <div class="stat-row">
@@ -1037,31 +1063,7 @@
 
       <div class="pane" id="pane-settings">
         <div class="pane-head"><span class="meta">数据仅保存在本机 · 建议定期备份</span></div>
-        <div class="card sync-card">
-          <div class="sync-head">
-            <span class="t">数据同步</span>
-            <span class="st">免注册 · 设备直传</span>
-          </div>
-          <div class="sync-age" id="syncAge">—</div>
-          <div class="sync-actions">
-            <button class="btn small" id="genSyncBtn">生成同步码</button>
-            <button class="btn ghost small" id="pasteSyncBtn">粘贴同步码</button>
-          </div>
-          <div id="syncOut" style="display:none">
-            <textarea id="syncCodeOut" readonly rows="4" style="margin-top:10px;font-size:11px;word-break:break-all"></textarea>
-            <div style="display:flex;justify-content:flex-end;margin-top:8px">
-              <button class="btn small" id="copySyncBtn">复制同步码</button>
-            </div>
-          </div>
-          <div id="syncIn" style="display:none">
-            <textarea id="syncCodeIn" rows="4" style="margin-top:10px;font-size:11px;word-break:break-all" placeholder="粘贴对方发来的同步码…"></textarea>
-            <div style="display:flex;justify-content:flex-end;margin-top:8px">
-              <button class="btn small" id="mergeSyncBtn">合并到本机</button>
-            </div>
-          </div>
-          <div class="sync-tip">零注册、不依赖服务器:在本机点「生成同步码」,用微信 / 短信发给另一台设备,对方点「粘贴同步码」即可<b>双向合并</b>(按记录去重,不覆盖已有数据)。</div>
-        </div>
-        <div class="card" style="margin-top:10px">
+        <div class="card">
           <div class="note-head"><span class="t">备份文件</span></div>
           <div class="sync-row" style="margin-bottom:0">
             <button id="exportBtn">导出数据备份</button>
@@ -1080,18 +1082,6 @@
             <button class="btn small" id="saveBudgetBtn">保存</button>
           </div>
           <div class="sync-tip" id="budgetState" style="margin-top:9px">未设置预算</div>
-        </div>
-
-        <div class="card" style="margin-top:10px">
-          <div class="note-head"><span class="t">键盘快捷键</span></div>
-          <div class="kbd-list">
-            <div><span>聚焦当前模块输入框</span><span class="kbd">/</span></div>
-            <div><span>按侧栏顺序切换模块</span><span class="kbd">1</span><span class="kbd">-</span><span class="kbd">9</span></div>
-            <div><span>回到今日概览</span><span class="kbd">0</span></div>
-            <div><span>关闭弹层 / 搜索 / 取消编辑</span><span class="kbd">Esc</span></div>
-            <div><span>刷新行情（股票页）</span><span class="kbd">R</span></div>
-          </div>
-          <div class="sync-tip" style="margin-top:10px">数字键对应侧栏图标顺序：1 概览 · 2 工作 · 3 学习 · 4 股票 · 5 记账 · 6 饮食 · 7 茶饮 · 8 药品 · 9 灵感（设置页请点击侧栏）。在输入框内输入时快捷键自动失效，不会影响打字。</div>
         </div>
       </div>
     </div><!-- /panes -->
@@ -1130,7 +1120,9 @@
     }
   };
   var KEYS = { bills:'wb_bills', meals:'wb_meals', ideas:'wb_ideas', notes:'wb_stock_notes', teas:'wb_teas', watch:'wb_watch', todos:'wb_todos', studies:'wb_studies', meds:'wb_meds',
-    budget:'wb_budget', syncAt:'wb_sync_at', watchCfg:'wb_watch_cfg' };
+    budget:'wb_budget', watchCfg:'wb_watch_cfg' };
+  /* 任何数据变更后打一个时间戳,供备份提示使用 */
+  function markChanged(){ store.set('wb_last_change', Date.now()); }
 
   function toast(msg){
     var t = $('toast'); t.textContent = msg; t.classList.add('show');
@@ -1176,7 +1168,6 @@
     $('topTitle').textContent = TITLES[sec];
     $('stockStatus').style.display = sec === 'stock' ? 'inline-flex' : 'none';
     if(sec === 'overview') renderOverview();
-    if(sec === 'settings') renderSyncAge();
     var sc = document.querySelector('.panes'); if(sc) sc.scrollTop = 0;   // 切模块时回到顶部
   }
   document.querySelector('.sb-nav').addEventListener('click', function(e){
@@ -1747,13 +1738,10 @@
 
   /* ================= 02 记账 ================= */
   var billType = 'expense';
-  var billRange = 'today';
+  var billPeriod = 'month';      // 记账默认按「月」看最实用
   function dateNDaysAgo(n){
     var d = new Date(); d.setDate(d.getDate() - n);
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function rangeLabel(){
-    return billRange === 'today' ? '今日' : (billRange === '7d' ? '近7日' : '累计');
   }
   $('billType').addEventListener('click', function(e){
     var btn = e.target.closest('button'); if(!btn) return;
@@ -1761,24 +1749,15 @@
     $('billType').querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === btn); });
     $('billCatWrap').style.display = billType === 'income' ? 'none' : 'block';
   });
-  $('billRange').addEventListener('click', function(e){
-    var btn = e.target.closest('button'); if(!btn) return;
-    billRange = btn.getAttribute('data-r');
-    $('billRange').querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b === btn); });
-    renderBills();
-  });
+  bindPeriod('billPeriod', function(p){ billPeriod = p; }, renderBills);
   function renderBills(){
     var today = todayStr();
     var all = store.get(KEYS.bills, []);
-    var cutoffDate = dateNDaysAgo(6);
-    var list = all.filter(function(b){
-      if(billRange === 'today') return b.date === today;
-      if(billRange === '7d') return b.date >= cutoffDate;
-      return true;
-    });
+    var startDate = periodStartDate(billPeriod);
+    var list = all.filter(function(b){ return b.date >= startDate; });
     var income = 0, expense = 0;
     list.forEach(function(b){ if(b.type === 'income') income += +b.amount; else expense += +b.amount; });
-    var lb = rangeLabel();
+    var lb = PERIOD_NAMES[billPeriod];
     $('lbIncome').textContent = lb + '收入';
     $('lbExpense').textContent = lb + '支出';
     $('lbNet').textContent = lb + '结余';
@@ -1790,10 +1769,8 @@
     var box = $('billList');
     if(!list.length){
       box.innerHTML = '<div class="empty">' + lb + '还没有账单' +
-        (billRange === 'today'
-          ? '<button class="empty-cta" data-act="gofocus" data-t="billAmount">＋ 记下第一笔</button>' +
-            '<div class="empty-hint">填金额与备注即可，分类会自动建议、也可以手动选</div>'
-          : '') + '</div>';
+        '<button class="empty-cta" data-act="gofocus" data-focus="billAmount">＋ 记下第一笔</button>' +
+        '<div class="empty-hint">填金额与备注即可，分类会自动建议、也可以手动选</div></div>';
       return;
     }
     box.innerHTML = list.slice().reverse().map(function(b){
@@ -1853,17 +1830,10 @@
   function renderStats(list){
     var exp = list.filter(function(b){ return b.type === 'expense'; });
     var total = exp.reduce(function(s, b){ return s + (+b.amount || 0); }, 0);
-    // 日均
-    var days = 1;
-    if(billRange === '7d') days = 7;
-    else if(billRange === 'all'){
-      var dates = store.get(KEYS.bills, []).map(function(b){ return b.date; });
-      if(dates.length){
-        var d0 = new Date(dates[0] + 'T00:00:00').getTime();
-        var span = Math.max(1, Math.round((Date.now() - d0) / 86400000) + 1);
-        days = span;
-      }
-    }
+    var lb = PERIOD_NAMES[billPeriod];
+    $('billStatSub').textContent = lb + ' · 手动分类优先';
+    /* 日均按「本周期已过天数」摊平,周期越长口径越稳定 */
+    var days = periodDays(billPeriod);
     $('stAvg').textContent = fmtMoney(exp.length ? total / days : 0);
     $('stCnt').textContent = exp.length + ' 笔';
     var max = exp.reduce(function(m, b){ return Math.max(m, +b.amount || 0); }, 0);
@@ -2066,7 +2036,7 @@
     var box = $('mealHistory');
     if(!list.length){
       box.innerHTML = '<div class="empty">还没有饮食打卡记录' +
-        '<button class="empty-cta" data-act="gofocus" data-t="mealB">＋ 记录今天吃了什么</button>' +
+        '<button class="empty-cta" data-act="gofocus" data-focus="mealB">＋ 记录今天吃了什么</button>' +
         '<div class="empty-hint">按早 / 午 / 晚 / 加餐填写，记录满 7 天会生成 AI 建议</div></div>';
       return;
     }
@@ -2078,6 +2048,48 @@
       return '<details><summary><span>' + m.date + ' <span class="d">打卡 ' + n + ' 餐</span></span><span class="arrow">▾</span></summary><div class="meal-detail">' + detail + '</div></details>';
     }).join('');
   }
+  /* ---- 饮食周期统计(日/周/月/季/年) ---- */
+  var mealPeriod = 'week';          // 饮食是习惯类,默认看「本周」最能看出结构
+  var MEAL_SEGS = [['早', 'breakfast'], ['午', 'lunch'], ['晚', 'dinner'], ['加', 'snack']];
+  function renderMealSummary(){
+    var label = PERIOD_NAMES[mealPeriod];
+    var startDate = periodStartDate(mealPeriod);
+    /* 饮食记录按天唯一(同一天覆盖),所以 list.length 就是打卡天数 */
+    var list = store.get(KEYS.meals, []).filter(function(m){ return m.date >= startDate; });
+    var segCount = [0, 0, 0, 0], totalMeals = 0, fullDays = 0;
+    list.forEach(function(m){
+      var n = 0;
+      MEAL_SEGS.forEach(function(s, i){
+        if(m[s[1]] && String(m[s[1]]).trim()){ segCount[i]++; n++; }
+      });
+      totalMeals += n;
+      if(n === MEAL_SEGS.length) fullDays++;
+    });
+    $('mealSummaryLabel').textContent = label;
+    $('mealSumDays').textContent = list.length;
+    $('mealSumMeals').textContent = totalMeals;
+    $('mealSumFull').textContent = fullDays;
+    $('mealSumBars').innerHTML = barHTML(MEAL_SEGS.map(function(s, i){
+      return { name:s[0], n:segCount[i] };
+    }), '次');
+    var lines = [];
+    if(!list.length){
+      lines.push(label + '还没有饮食记录,今天吃了什么就记一句。');
+    } else {
+      var avg = (totalMeals / list.length).toFixed(1);
+      lines.push(label + '打卡 ' + list.length + ' 天,共记录 ' + totalMeals + ' 餐,日均 ' + avg + ' 餐。');
+      if(fullDays) lines.push('三餐带加餐记全的有 ' + fullDays + ' 天,记录越完整,AI 建议越准。');
+      /* 找出记录最少的餐段,给一条针对性提醒 */
+      var weakest = MEAL_SEGS.map(function(s, i){ return { n:segCount[i], t:s[0] }; })
+        .sort(function(a, b){ return a.n - b.n; })[0];
+      if(weakest && weakest.n === 0) lines.push('「' + weakest.t + '餐」还没有记录,补上能看出更完整的饮食结构。');
+      else if(list.length >= 3 && totalMeals / list.length < 2.5) {
+        lines.push('平均每天只记 ' + avg + ' 餐,建议早午晚都记上,才能判断营养是否均衡。');
+      }
+    }
+    $('mealSumText').textContent = lines.join('\n');
+  }
+  bindPeriod('mealPeriod', function(p){ mealPeriod = p; }, renderMealSummary);
   $('saveMeal').addEventListener('click', function(){
     var b = $('mealB').value.trim(), l = $('mealL').value.trim(), d = $('mealD').value.trim(), s = $('mealS').value.trim();
     if(!b && !l && !d && !s){ toast('请至少填写一餐'); return; }
@@ -2086,7 +2098,7 @@
     var meal = { date:todayStr(), breakfast:b, lunch:l, dinner:d, snack:s, ts:Date.now() };
     if(idx >= 0) list[idx] = meal; else list.push(meal);
     store.set(KEYS.meals, list);
-    renderMealHistory(); toast('今日打卡已保存'); markChanged();
+    renderMealHistory(); renderMealSummary(); toast('今日打卡已保存'); markChanged();
   });
   $('aiAdvice').addEventListener('click', function(){
     var b = $('mealB').value.trim(), l = $('mealL').value.trim(), d = $('mealD').value.trim(), s = $('mealS').value.trim();
@@ -2096,7 +2108,7 @@
       var meal = { date:todayStr(), breakfast:b, lunch:l, dinner:d, snack:s, ts:Date.now() };
       if(idx >= 0) list[idx] = meal; else list.push(meal);
       store.set(KEYS.meals, list);
-      renderMealHistory();
+      renderMealHistory(); renderMealSummary();
       markChanged();
     }
     var records = getRecentMeals(7);
@@ -2119,8 +2131,8 @@
     var box = $('teaHistory');
     if(!list.length){
       box.innerHTML = '<div class="empty">还没有茶饮打卡记录' +
-        '<button class="empty-cta" data-act="gofocus" data-t="teaName">＋ 打卡第一杯茶</button>' +
-        '<div class="empty-hint">先选茶类（白 / 绿 / 乌龙 / 黑 / 黄），再填具体茶名</div></div>';
+        '<button class="empty-cta" data-act="gofocus" data-focus="teaName">＋ 打卡第一杯茶</button>' +
+        '<div class="empty-hint">先选茶类（白 / 绿 / 乌龙 / 黑 / 其他），再填具体茶名</div></div>';
       return;
     }
     // 按天分组,倒序
@@ -2147,6 +2159,42 @@
         '<button class="del" data-k="tea" data-i="' + t.ts + '">✕</button></span>';
     }).join('');
   }
+  /* ---- 茶饮周期统计(日/周/月/季/年) ---- */
+  var teaPeriod = 'week';           // 茶饮同属习惯类,默认看「本周」
+  function renderTeaSummary(){
+    var label = PERIOD_NAMES[teaPeriod];
+    var startDate = periodStartDate(teaPeriod);
+    var list = store.get(KEYS.teas, []).filter(function(t){ return t.date >= startDate; });
+    var days = {}, kinds = {}, names = {};
+    list.forEach(function(t){
+      days[t.date] = 1;
+      kinds[t.type] = (kinds[t.type] || 0) + 1;
+      if(t.name) names[t.name] = (names[t.name] || 0) + 1;
+    });
+    var dayN = Object.keys(days).length, kindN = Object.keys(kinds).length;
+    $('teaSumLabel').textContent = label;
+    $('teaSumCups').textContent = list.length;
+    $('teaSumDays').textContent = dayN;
+    $('teaSumKinds').textContent = kindN;
+    $('teaSumBars').innerHTML = barHTML(TEA_TYPES.map(function(t){
+      return { name:t, n:kinds[t] || 0 };
+    }), '杯');
+    var lines = [];
+    if(!list.length){
+      lines.push(label + '还没有茶饮记录,喝到好茶记一笔。');
+    } else {
+      lines.push(label + '喝了 ' + list.length + ' 杯,打卡 ' + dayN + ' 天,涉及 ' + kindN + ' 个茶类。');
+      var top = Object.keys(names).sort(function(a, b){ return names[b] - names[a]; });
+      if(top.length) lines.push('最常喝:' + top.slice(0, 3).map(function(k){ return '「' + k + '」' + names[k] + ' 杯'; }).join('、'));
+      var perDay = list.length / dayN;
+      if(perDay >= 3) lines.push('日均 ' + perDay.toFixed(1) + ' 杯偏多,浓茶中的咖啡因与鞣酸可能影响睡眠和铁吸收,建议控制在 2-3 杯内。');
+      else if(perDay <= 1 && dayN >= 3) lines.push('日均约 1 杯,节奏挺稳,午后之后可以优先选发酵度高的茶,对睡眠更友好。');
+      if(kindN === 1 && list.length >= 5) lines.push('只喝了「' + Object.keys(kinds)[0] + '」一类,换着喝能兼顾不同风味与成分。');
+    }
+    $('teaSumText').textContent = lines.join('\n');
+  }
+  bindPeriod('teaPeriod', function(p){ teaPeriod = p; }, renderTeaSummary);
+
   $('addTea').addEventListener('click', function(){
     var name = $('teaName').value.trim();
     if(!name){ toast('请填写具体茶名'); return; }
@@ -2156,7 +2204,7 @@
     list.push({ date:todayStr(), type:teaType, name:name, ts:Date.now() });
     store.set(KEYS.teas, list);
     $('teaName').value = '';
-    renderTeaToday(); renderTeaHistory(); toast('已打卡:今日 ' + teaType); markChanged();
+    renderTeaToday(); renderTeaHistory(); renderTeaSummary(); toast('已打卡:今日 ' + teaType); markChanged();
   });
   renderTeaToday(); renderTeaHistory();
 
@@ -2172,12 +2220,7 @@
     medTime = b.getAttribute('data-t');
     $('medTime').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
   });
-  $('medPeriod').addEventListener('click', function(e){
-    var b = e.target.closest('button'); if(!b) return;
-    medPeriod = b.getAttribute('data-p');
-    $('medPeriod').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
-    renderMedSummary();
-  });
+  bindPeriod('medPeriod', function(p){ medPeriod = p; }, renderMedSummary);
   function renderMedToday(){
     var today = todayStr();
     var list = store.get(KEYS.meds, []).filter(function(m){ return m.date === today; });
@@ -2194,7 +2237,7 @@
     var box = $('medHistory');
     if(!list.length){
       box.innerHTML = '<div class="empty">还没有用药记录' +
-        '<button class="empty-cta" data-act="gofocus" data-t="medName">＋ 记录第一次用药</button>' +
+        '<button class="empty-cta" data-act="gofocus" data-focus="medName">＋ 记录第一次用药</button>' +
         '<div class="empty-hint">先选分类（补剂 / OTC / 处方）与时段，再填药名</div></div>';
       return;
     }
@@ -2222,7 +2265,9 @@
     renderMedToday(); renderMedHistory(); renderMedSummary(); toast('已记录:' + medTime + ' ' + name); markChanged();
   });
   $('medName').addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); $('addMed').click(); } });
-  function medBarHTML(groups){
+  /* 通用占比条形图(药品/饮食/茶饮共用),groups = [{name, n}] */
+  function barHTML(groups, unit){
+    var u = unit || '次';
     var max = 1;
     groups.forEach(function(g){ if(g.n > max) max = g.n; });
     var html = '';
@@ -2231,9 +2276,9 @@
       var w = Math.max(4, Math.round(g.n / max * 100));
       html += '<div class="cat-row"><span class="cat-name">' + g.name + '</span>' +
         '<span class="cat-bar"><i style="width:' + w + '%"></i></span>' +
-        '<span class="cat-val">' + g.n + ' 次</span></div>';
+        '<span class="cat-val">' + g.n + ' ' + u + '</span></div>';
     });
-    if(!html) html = '<div class="cat-row"><span class="cat-name">—</span><span class="cat-bar"></span><span class="cat-val">0 次</span></div>';
+    if(!html) html = '<div class="cat-row"><span class="cat-name">—</span><span class="cat-bar"></span><span class="cat-val">0 ' + u + '</span></div>';
     return html;
   }
   function renderMedSummary(){
@@ -2254,8 +2299,8 @@
     $('msKinds').textContent = kindN;
     var catAll = ['补剂','OTC','处方'].map(function(c){ return { name:c, n:cats[c] || 0 }; });
     var timeAll = ['早间','午间','晚间'].map(function(t, i){ return { name:t, n:times[['早','中','晚'][i]] || 0 }; });
-    $('msCat').innerHTML = medBarHTML(catAll);
-    $('msTime').innerHTML = medBarHTML(timeAll);
+    $('msCat').innerHTML = barHTML(catAll);
+    $('msTime').innerHTML = barHTML(timeAll);
     var lines = [];
     if(!recs.length){
       lines.push(label + '还没有用药记录,吃完记一笔,坚持更健康。');
@@ -2299,7 +2344,7 @@
       else if(workFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,待办全部清空 🎉</div>';
       else if(workFilter === 'done') box.innerHTML = '<div class="empty">还没有已完成事项</div>';
       else box.innerHTML = '<div class="empty">今天还没有待办' +
-        '<button class="empty-cta" data-act="gofocus" data-t="workInput">＋ 写第一件要做的事</button>' +
+        '<button class="empty-cta" data-act="gofocus" data-focus="workInput">＋ 写第一件要做的事</button>' +
         '<div class="empty-hint">例如「整理本周复盘」「确认交付时间」</div></div>';
       return;
     }
@@ -2338,7 +2383,7 @@
       else if(studyFilter === 'todo') box.innerHTML = '<div class="empty">太棒了,学习任务全部完成 🎉</div>';
       else if(studyFilter === 'done') box.innerHTML = '<div class="empty">还没有已完成记录</div>';
       else box.innerHTML = '<div class="empty">今天还没有学习记录' +
-        '<button class="empty-cta" data-act="gofocus" data-t="studyInput">＋ 记下今天学什么</button>' +
+        '<button class="empty-cta" data-act="gofocus" data-focus="studyInput">＋ 记下今天学什么</button>' +
         '<div class="empty-hint">先选上方类目（AI / 股市 / 读书 / 其他），再写下内容</div></div>';
       return;
     }
@@ -2408,12 +2453,7 @@
     $('workRange').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
     renderWorkList();
   });
-  $('workPeriod').addEventListener('click', function(e){
-    var b = e.target.closest('button'); if(!b) return;
-    workPeriod = b.getAttribute('data-p');
-    $('workPeriod').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
-    renderWorkSummary();
-  });
+  bindPeriod('workPeriod', function(p){ workPeriod = p; }, renderWorkSummary);
   $('studyCatPick').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
     studyCat = b.getAttribute('data-c');
@@ -2436,20 +2476,35 @@
     $('studyRange').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
     renderStudyList();
   });
-  $('studyPeriod').addEventListener('click', function(e){
-    var b = e.target.closest('button'); if(!b) return;
-    studyPeriod = b.getAttribute('data-p');
-    $('studyPeriod').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
-    renderStudySummary();
-  });
-  /* ---- 总结统计(日/周/月/年) ---- */
-  var PERIOD_NAMES = { day:'今日', week:'本周', month:'本月', year:'今年' };
+  bindPeriod('studyPeriod', function(p){ studyPeriod = p; }, renderStudySummary);
+  /* ---- 周期统计共享层:日 / 周 / 月 / 季 / 年 ---- */
+  var PERIOD_NAMES = { day:'今日', week:'本周', month:'本月', quarter:'本季', year:'今年' };
+  /* 时间戳 → 'YYYY-MM-DD'(本地时区)。供「按 date 字段记录」的模块(账单/饮食/茶饮)过滤 */
+  function ymd(ts){
+    var d = new Date(ts);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
   function periodStart(p){
     var n = new Date();
     if(p === 'day') return new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
     if(p === 'week'){ var dow = n.getDay() || 7; return new Date(n.getFullYear(), n.getMonth(), n.getDate() - (dow - 1)).getTime(); }
     if(p === 'month') return new Date(n.getFullYear(), n.getMonth(), 1).getTime();
+    if(p === 'quarter') return new Date(n.getFullYear(), Math.floor(n.getMonth() / 3) * 3, 1).getTime();
     return new Date(n.getFullYear(), 0, 1).getTime();
+  }
+  /* 周期起始日期字符串,按 date 记录的模块用它比较 */
+  function periodStartDate(p){ return ymd(periodStart(p)); }
+  /* 周期已过天数(含今天),供「日均」类指标使用 */
+  function periodDays(p){ return Math.max(1, Math.round((Date.now() - periodStart(p)) / 86400000) + 1); }
+  /* 周期选择器统一绑定:setter 收键值,rerender 负责重绘 */
+  function bindPeriod(id, setter, rerender){
+    var box = $(id); if(!box) return;
+    box.addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b) return;
+      setter(b.getAttribute('data-p'));
+      box.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+      rerender();
+    });
   }
   function todoPeriodStats(list, p){
     var start = periodStart(p);
@@ -2603,7 +2658,8 @@
     } else if(act === 's-clear'){
       clearOrCloseSearch(k);
     } else if(act === 'gofocus'){
-      var tid = b.getAttribute('data-t'), el2 = tid ? $(tid) : null;
+      /* 注意:焦点目标读 data-focus,不要与「选项值」data-t 混用 */
+      var tid = b.getAttribute('data-focus'), el2 = tid ? $(tid) : null;
       if(el2){
         el2.scrollIntoView({ behavior:'smooth', block:'center' });
         setTimeout(function(){ el2.focus(); }, 260);
@@ -2697,7 +2753,7 @@
     if(!items.length){
       if(q){ box.innerHTML = searchEmptyHTML('idea', searchQ.idea.trim()); return; }
       box.innerHTML = '<div class="empty">还没有灵感记录' +
-        '<button class="empty-cta" data-act="gofocus" data-t="ideaText">＋ 捕捉第一个想法</button>' +
+        '<button class="empty-cta" data-act="gofocus" data-focus="ideaText">＋ 捕捉第一个想法</button>' +
         '<div class="empty-hint">一闪而过的念头、临时待办、读书随笔都可以</div></div>';
       return;
     }
@@ -2729,7 +2785,7 @@
     if(k === 'bill'){ store.set(KEYS.bills, store.get(KEYS.bills, []).filter(function(b){ return b.ts !== ts; })); renderBills(); }
     if(k === 'note'){ store.set(KEYS.notes, store.get(KEYS.notes, []).filter(function(n){ return n.ts !== ts; })); renderStockNotes(); }
     if(k === 'idea'){ store.set(KEYS.ideas, store.get(KEYS.ideas, []).filter(function(i){ return i.ts !== ts; })); renderIdeas(); }
-    if(k === 'tea'){ store.set(KEYS.teas, store.get(KEYS.teas, []).filter(function(t){ return t.ts !== ts; })); renderTeaToday(); renderTeaHistory(); }
+    if(k === 'tea'){ store.set(KEYS.teas, store.get(KEYS.teas, []).filter(function(t){ return t.ts !== ts; })); renderTeaToday(); renderTeaHistory(); renderTeaSummary(); }
     if(k === 'watch'){ var sid = btn.getAttribute('data-i'); store.set(KEYS.watch, store.get(KEYS.watch, []).filter(function(w){ return w.secid !== sid; })); renderWatchList(); loadIndices(); }
     if(k === 'todo'){ if(editTodo && editTodo.ts === ts) editTodo = null; store.set(KEYS.todos, store.get(KEYS.todos, []).filter(function(t){ return t.ts !== ts; })); renderWorkList(); renderWorkSummary(); }
     if(k === 'study'){ if(editTodo && editTodo.ts === ts) editTodo = null; store.set(KEYS.studies, store.get(KEYS.studies, []).filter(function(t){ return t.ts !== ts; })); renderStudyList(); renderStudySummary(); }
@@ -2738,12 +2794,16 @@
   });
 
   /* ================= 备份与恢复 ================= */
-  $('exportBtn').addEventListener('click', function(){
-    var data = { app:'minimal-daily', version:3, exportedAt:new Date().toISOString(),
+  /* 导出用的数据快照。新增模块时改这一处即可（导入侧另有字段清单） */
+  function collectData(){
+    return { app:'minimal-daily', version:3, exportedAt:new Date().toISOString(),
       bills:store.get(KEYS.bills, []), meals:store.get(KEYS.meals, []),
       ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []),
       todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []), meds:store.get(KEYS.meds, []),
       budget:getBudget() };
+  }
+  $('exportBtn').addEventListener('click', function(){
+    var data = collectData();
     var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -2783,146 +2843,6 @@
     e.target.value = '';
   });
 
-  /* ================= 数据同步(免注册 · 设备直传) ================= */
-  function collectData(){
-    return { app:'minimal-daily', version:3, generatedAt:new Date().toISOString(),
-      bills:store.get(KEYS.bills, []), meals:store.get(KEYS.meals, []),
-      ideas:store.get(KEYS.ideas, []), notes:store.get(KEYS.notes, []), teas:store.get(KEYS.teas, []), watch:store.get(KEYS.watch, []),
-      todos:store.get(KEYS.todos, []), studies:store.get(KEYS.studies, []), meds:store.get(KEYS.meds, []),
-      budget:getBudget() };
-  }
-  function markChanged(){ store.set('wb_last_change', Date.now()); }
-  function bytesToBase64(bytes){
-    var bin = '';
-    for(var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-    return btoa(bin);
-  }
-  function base64ToBytes(b64){
-    var bin = atob(b64);
-    var u = new Uint8Array(bin.length);
-    for(var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
-    return u;
-  }
-  function hasCompression(){ return typeof CompressionStream !== 'undefined' && typeof DecompressionStream !== 'undefined'; }
-  function buildSyncCode(){
-    var json = JSON.stringify(collectData());
-    if(hasCompression()){
-      try{
-        var bytes = new TextEncoder().encode(json);
-        var stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
-        return new Response(stream).arrayBuffer().then(function(buf){ return 'D1:' + bytesToBase64(new Uint8Array(buf)); });
-      }catch(e){ /* fallback 到纯 base64 */ }
-    }
-    return Promise.resolve('B1:' + bytesToBase64(new TextEncoder().encode(json)));
-  }
-  function parseSyncPayload(payload){
-    var body = payload.slice(3);
-    if(payload.indexOf('D1:') === 0){
-      var ds = new DecompressionStream('deflate-raw');
-      var stream = new Blob([base64ToBytes(body)]).stream().pipeThrough(ds);
-      return new Response(stream).arrayBuffer().then(function(buf){ return JSON.parse(new TextDecoder().decode(new Uint8Array(buf))); });
-    }
-    return Promise.resolve(JSON.parse(new TextDecoder().decode(base64ToBytes(body))));
-  }
-  function mergeByTs(a, b){
-    var map = {}, order = [];
-    (a || []).forEach(function(x){ if(x && typeof x.ts === 'number' && !(x.ts in map)){ map[x.ts] = x; order.push(x.ts); } });
-    var added = 0;
-    (b || []).forEach(function(x){
-      if(x && typeof x.ts === 'number'){
-        if(!(x.ts in map)){ map[x.ts] = x; order.push(x.ts); added++; }
-      } else { map['r_' + Math.random().toString(36).slice(2)] = x; added++; }
-    });
-    var extras = Object.keys(map).filter(function(k){ return k.indexOf('r_') === 0; }).map(function(k){ return map[k]; });
-    return { list: order.map(function(ts){ return map[ts]; }).concat(extras), added: added };
-  }
-  function setSyncPanel(show, which){
-    $('syncOut').style.display = (show && which === 'out') ? 'block' : 'none';
-    $('syncIn').style.display = (show && which === 'in') ? 'block' : 'none';
-  }
-  function fallbackCopy(text){
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); toast('同步码已复制'); }catch(e){ toast('请长按同步码手动复制'); }
-    ta.remove();
-  }
-  $('genSyncBtn').addEventListener('click', function(){
-    setSyncPanel(true, 'out');
-    var btn = $('genSyncBtn'); btn.disabled = true; btn.textContent = '生成中…';
-    buildSyncCode().then(function(code){
-      $('syncCodeOut').value = code;
-      btn.disabled = false; btn.textContent = '生成同步码';
-      toast('同步码已生成,复制后发给另一台设备');
-      markSynced();
-    });
-  });
-  $('copySyncBtn').addEventListener('click', function(){
-    var t = $('syncCodeOut').value;
-    if(!t){ toast('请先生成同步码'); return; }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(function(){ toast('同步码已复制'); }, function(){ fallbackCopy(t); });
-    } else fallbackCopy(t);
-  });
-  $('pasteSyncBtn').addEventListener('click', function(){ setSyncPanel(true, 'in'); });
-  $('mergeSyncBtn').addEventListener('click', function(){
-    var code = $('syncCodeIn').value.trim();
-    if(!code){ toast('请先粘贴同步码'); return; }
-    if(code.indexOf('D1:') !== 0 && code.indexOf('B1:') !== 0){ toast('这不是有效的同步码'); return; }
-    var btn = $('mergeSyncBtn'); btn.disabled = true; btn.textContent = '合并中…';
-    parseSyncPayload(code).then(function(d){
-      if(!d || d.app !== 'minimal-daily'){ throw new Error('bad'); }
-      var total = 0;
-      ['bills','meals','ideas','notes','teas','watch','todos','studies','meds'].forEach(function(k){
-        var merged = mergeByTs(store.get(KEYS[k], []), d[k] || []);
-        store.set(KEYS[k], merged.list);
-        total += merged.added;
-      });
-      /* 预算:本机未设置时采用同步码中的值 */
-      if(typeof d.budget === 'number' && d.budget > 0 && !getBudget()) store.set(KEYS.budget, d.budget);
-      renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderTeaToday(); renderTeaHistory(); renderWatchList();
-      renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
-      renderMedToday(); renderMedHistory(); renderMedSummary();
-      renderBudgetSetting(); renderOverview();
-      loadIndices();
-      $('syncCodeIn').value = '';
-      btn.disabled = false; btn.textContent = '合并到本机';
-      toast('同步完成,新增 ' + total + ' 条记录');
-      markChanged(); markSynced();
-    }).catch(function(){
-      btn.disabled = false; btn.textContent = '合并到本机';
-      toast('同步码无法解析,请检查是否复制完整');
-    });
-  });
-
-  /* ================= 同步时间追踪 ================= */
-  function markSynced(){
-    store.set(KEYS.syncAt, Date.now());
-    renderSyncAge();
-  }
-  function humanAgo(ts){
-    var s = Math.floor((Date.now() - ts) / 1000);
-    if(s < 60) return '刚刚';
-    var m = Math.floor(s / 60);
-    if(m < 60) return m + ' 分钟前';
-    var h = Math.floor(m / 60);
-    if(h < 24) return h + ' 小时前';
-    return Math.floor(h / 24) + ' 天前';
-  }
-  function renderSyncAge(){
-    var el = $('syncAge'); if(!el) return;
-    var at = store.get(KEYS.syncAt, 0);
-    var changed = store.get('wb_last_change', 0);
-    if(!at){
-      el.innerHTML = '<span class="warn">还没有同步过</span> · 建议首次使用后生成一次同步码，备份到另一台设备';
-      return;
-    }
-    var txt = '上次同步 ' + humanAgo(at);
-    el.innerHTML = (changed && changed > at)
-      ? txt + ' · <span class="warn">本机有未同步的新记录</span>'
-      : txt + ' · 数据已同步';
-  }
-
   /* ================= 记账偏好:月预算 ================= */
   function renderBudgetSetting(){
     var el = $('budgetState'); if(!el) return;
@@ -2951,7 +2871,6 @@
   $('budgetInput').addEventListener('keydown', function(e){
     if(e.key === 'Enter'){ e.preventDefault(); $('saveBudgetBtn').click(); }
   });
-  setInterval(renderSyncAge, 60000);      // 相对时间每分钟刷新
 
   /* ================= 键盘快捷键 ================= */
   var FOCUS_IDS = { overview:null, work:'workInput', study:'studyInput', stock:'watchKw', bill:'billAmount',
@@ -3015,18 +2934,18 @@
 
   /* ================= 初始渲染 ================= */
   setStoreState(storageOK);
-  renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory();
-  renderTeaToday(); renderTeaHistory(); renderWatchList();
+  renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderMealSummary();
+  renderTeaToday(); renderTeaHistory(); renderTeaSummary(); renderWatchList();
   renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
   renderMedToday(); renderMedHistory(); renderMedSummary();
-  renderBudgetSetting(); renderSyncAge();
+  renderBudgetSetting();
   switchTo('overview');          // 默认打开今日概览(行情就绪后异动会自动刷新)
   window.addEventListener('pageshow', function(){
-    renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory();
-    renderTeaToday(); renderTeaHistory(); renderWatchList();
+    renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderMealSummary();
+    renderTeaToday(); renderTeaHistory(); renderTeaSummary(); renderWatchList();
     renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary();
     renderMedToday(); renderMedHistory(); renderMedSummary();
-    renderBudgetSetting(); renderSyncAge();
+    renderBudgetSetting();
     if(curSec === 'overview') renderOverview();
   });
 })();
