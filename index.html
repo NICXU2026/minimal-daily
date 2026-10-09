@@ -55,6 +55,7 @@
   .hero-status b{width:6px;height:6px;border-radius:50%;background:var(--down);box-shadow:0 0 0 3px rgba(7,148,85,.2);display:inline-block}
   .hero-status.err b{background:var(--up);box-shadow:0 0 0 3px rgba(217,45,32,.2)}
   .hero-status.sync b{background:#8e8e98;box-shadow:none;animation:pulse 1.2s infinite}
+  .hero-status.stale b{background:#c9940a;box-shadow:0 0 0 3px rgba(201,148,10,.18)}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .hero h1{font-size:26px;font-weight:700;letter-spacing:1px;margin-bottom:6px}
   .hero-sub{font-size:12.5px;color:var(--hero-sub);letter-spacing:1px;display:flex;align-items:center;gap:8px}
@@ -110,6 +111,10 @@
   .idx-badge.b-up{color:var(--up);background:var(--up-bg)} .idx-badge.b-down{color:var(--down);background:var(--down-bg)} .idx-badge.b-flat{color:var(--ink-3);background:var(--card-2)}
   .idx-extra{font-size:10px;color:var(--ink-3);margin-top:9px;display:flex;gap:12px;font-variant-numeric:tabular-nums;border-top:1px dashed var(--line);padding-top:7px}
   .idx-extra span b{color:var(--ink-2);font-weight:600}
+  /* 数据暂缺的指数卡:虚线灰框,和"有数"的卡明显区分,但卡片不消失 */
+  .idx-card.idx-miss{border-style:dashed;background:var(--card-2);box-shadow:none}
+  .idx-card.idx-miss .idx-price{color:var(--ink-3)}
+  .idx-card.idx-miss .idx-chg{font-weight:500}
   .stock-toolbar{display:flex;justify-content:space-between;align-items:center;padding:2px 2px 12px;font-size:10.5px;color:var(--ink-3);letter-spacing:.3px}
   .stock-toolbar .refresh{border:1px solid var(--line-2);background:var(--card);color:var(--ink-2);border-radius:8px;padding:5px 11px;font-size:11px;cursor:pointer;font-weight:500;transition:all .15s}
   .watch-box{margin:0 0 12px}
@@ -1175,7 +1180,7 @@
   }
   /* 顶部状态灯文案精简,避免窄屏换行 */
   function setStatusShort(mode){
-    var txt = mode === '' ? '实时' : (mode === 'sync' ? '同步中' : '获取失败');
+    var txt = mode === '' ? '实时' : (mode === 'sync' ? '同步中' : (mode === 'stale' ? '快照' : '获取失败'));
     setStatus(mode, txt);
   }
 
@@ -1400,18 +1405,143 @@
   var INDEX_FIELDS = 'f2,f3,f4,f5,f6,f8,f10,f12,f13,f14,f15,f16,f17,f18';
   var INDEX_SECIDS = '1.000001,0.399001,0.399006,1.000688,1.000300,0.899050,100.HSI,124.HSTECH,100.KS11,100.N225';
   var INDEX_CODES = { '1.000001':1,'0.399001':1,'0.399006':1,'1.000688':1,'1.000300':1,'0.899050':1,'100.HSI':1,'124.HSTECH':1,'100.KS11':1,'100.N225':1 };
+  /* 指数中文名:数据源没返回时也要把卡片画出来,不让卡片凭空消失(否则看起来像"少了几项") */
+  var INDEX_NAMES = { '1.000001':'上证指数','0.399001':'深证成指','0.399006':'创业板指','1.000688':'科创50','1.000300':'沪深300','0.899050':'北证50','100.HSI':'恒生指数','124.HSTECH':'恒生科技指数','100.KS11':'韩国KOSPI','100.N225':'日经225' };
   function isIndex(it){ return !!INDEX_CODES[it.f13 + '.' + it.f12]; }
   function secidOf(it){ return (it.f13 !== undefined && it.f13 !== null) ? it.f13 + '.' + it.f12 : it.f12; }
-  function indexSecids(){
+  /* 全量标的 = 固定指数 + 用户自选(去重后仍是数组,顺序稳定) */
+  function allSecids(){
     var ws = store.get(KEYS.watch, []).map(function(w){ return w.secid; });
-    return ws.length ? INDEX_SECIDS + ',' + ws.join(',') : INDEX_SECIDS;
+    var out = [], seen = {};
+    INDEX_SECIDS.split(',').concat(ws).forEach(function(s){
+      if(s && !seen[s]){ seen[s] = 1; out.push(s); }
+    });
+    return out;
   }
-  var SOURCES = [
-    { name:'东财主站', url:function(cb){ return 'https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&secids=' + indexSecids() + '&fields=' + INDEX_FIELDS + '&cb=' + cb; } },
-    { name:'东财节点', url:function(cb){ return 'https://92.push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&secids=' + indexSecids() + '&fields=' + INDEX_FIELDS + '&cb=' + cb; } },
-    { name:'东财备用', url:function(cb){ return 'https://push2delay.eastmoney.com/api/qt/ulist.np/get?fltt=2&secids=' + indexSecids() + '&fields=' + INDEX_FIELDS + '&cb=' + cb; } }
-  ];
-  function jsonpGet(urlFactory){
+  /* 指数卡上的短名(卡片窄,长名会撑破) */
+  var INDEX_SHORT = { '上证指数':'上证','深证成指':'深证','创业板指':'创业板','科创50':'科创50','沪深300':'沪深300','北证50':'北证50','恒生指数':'恒生','恒生科技指数':'恒生科技','韩国KOSPI':'KOSPI','日经225':'日经225' };
+
+  /* ============ 行情取数:双源并行 ============
+     为什么改成双源:东财 push2 有较硬的频控,实测连续请求会触发 IP 级封禁(20 分钟仍未恢复),
+     三个节点又同属一家公司,一起挂就彻底没数。腾讯 qt.gtimg.cn 实测更快(0.16s vs 0.38s)、
+     更稳,覆盖 A股/港股/美股全部,只有日经225与韩国KOSPI 不提供。
+     于是:腾讯取大头 + 东财只补它给不了的那几个 secid(请求体极小,不易被限流);
+     腾讯整体挂掉时,东财再顶上全量。两路并行,谁先回谁先出数,后回的做增量补齐。 */
+  var QUOTE_TIMEOUT = 6000;
+  var QUOTE_CACHE_KEY = 'wb_quotes_cache';
+  var quoteInflight = null;   /* 单飞:并发触发只跑一轮 */
+  var quoteAt = 0;            /* 最近一次成功取数的时刻 */
+  var quoteStreak = 0;        /* 连续失败次数(用于退避) */
+  var quoteTimer = null;
+  var quoteFromCache = false;
+
+  /* 带超时的 fetch:能 abort,失败即抛,不占着配额空等 */
+  function fetchAbort(url, ms){
+    if(typeof fetch !== 'function') return Promise.reject(new Error('fetch unavailable'));
+    var ctl = (typeof AbortController === 'function') ? new AbortController() : null;
+    var to = setTimeout(function(){ if(ctl){ try{ ctl.abort(); }catch(e){} } }, ms);
+    var opt = { cache:'no-store' };
+    if(ctl) opt.signal = ctl.signal;
+    return fetch(url, opt).then(function(r){
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.arrayBuffer();
+    }).then(function(b){ clearTimeout(to); return b; }, function(e){ clearTimeout(to); throw e; });
+  }
+  function decodeBuf(buf, enc){
+    try{ return new TextDecoder(enc).decode(buf); }catch(e){ return ''; }
+  }
+
+  /* ---------- 源 A:腾讯行情 ----------
+     代码格式 sh600000 / sz000001 / bj899050 / hk00700 / hkHSI;
+     返回是 GBK 编码的 JS 变量赋值 v_xxx="字段~字段~…",不带自定义回调,故按变量名回查 secid。
+     字段位(实测):[1]名称 [2]代码 [3]现价 [4]昨收 [5]今开 [6]成交量(手)
+                  [30]行情时间 [31]涨跌额 [32]涨跌幅% [33]最高 [34]最低
+                  [37]成交额(万元) [38]换手率% [49]量比 */
+  var TX_INDEX = {
+    '1.000001':'sh000001', '0.399001':'sz399001', '0.399006':'sz399006',
+    '1.000688':'sh000688', '1.000300':'sh000300', '0.899050':'bj899050',
+    '100.HSI':'hkHSI', '124.HSTECH':'hkHSTECH'
+    /* 100.KS11 / 100.N225 腾讯不提供 —— 这两个交给东财 */
+  };
+  function isHKMarket(secid){
+    var m = String(secid).split('.')[0];
+    return m === '100' || m === '105' || m === '116' || m === '124';
+  }
+  /* secid → 腾讯代码;返回 null 表示腾讯不覆盖该标的 */
+  function txCodeOf(secid){
+    if(TX_INDEX[secid]) return TX_INDEX[secid];
+    /* 是已知指数但腾讯不覆盖(日经225/韩国KOSPI):必须明确返回 null 交给东财去补。
+       不能落到下面的前缀推断 —— 否则会拼出 hkKS11 这种无效代码,
+       还会把它错分进腾讯组,导致东财永远不去取,这两张卡就长期「数据暂缺」。 */
+    if(INDEX_CODES[secid]) return null;
+    var p = String(secid).split('.');
+    if(p.length !== 2) return null;
+    var mkt = p[0], code = p[1];
+    if(mkt === '1') return 'sh' + code;
+    if(mkt === '0') return (/^[48]/.test(code) ? 'bj' : 'sz') + code;
+    if(isHKMarket(secid)) return 'hk' + code;
+    return null;
+  }
+  function numOf(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
+  function txQuoteOf(a, secid){
+    var p = String(secid).split('.');
+    var hk = isHKMarket(secid);
+    var amt = numOf(a[37]);
+    return {
+      f2: numOf(a[3]), f3: numOf(a[32]), f4: numOf(a[31]),
+      f5: numOf(a[6]),
+      /* 东财 f6 单位是「元」,腾讯 [37] 给的是「万元」,必须换算否则差 1e4 倍 */
+      f6: amt === null ? null : amt * 10000,
+      /* 港股没有换手率,[49] 在港股也不是量比 —— 宁可留空,不给错数 */
+      f8: hk ? null : numOf(a[38]),
+      f10: hk ? null : numOf(a[49]),
+      f12: p[1], f13: parseInt(p[0], 10),
+      f14: a[1] || '', f15: numOf(a[33]), f16: numOf(a[34]),
+      f17: numOf(a[5]), f18: numOf(a[4]),
+      src: 'tx'
+    };
+  }
+  function fetchTencent(secids){
+    var pairs = [];
+    secids.forEach(function(s){ var c = txCodeOf(s); if(c) pairs.push({ sid:s, code:c }); });
+    if(!pairs.length) return Promise.reject(new Error('腾讯源无可用标的'));
+    var chunks = [], CH = 60;    /* 分片:单条 URL 别拼太长 */
+    for(var i = 0; i < pairs.length; i += CH) chunks.push(pairs.slice(i, i + CH));
+    return Promise.all(chunks.map(function(ch){
+      var back = {};
+      ch.forEach(function(p){ back[p.code] = p.sid; });
+      var url = 'https://qt.gtimg.cn/q=' + ch.map(function(p){ return p.code; }).join(',');
+      return fetchAbort(url, QUOTE_TIMEOUT).then(function(buf){
+        var txt = decodeBuf(buf, 'gbk');
+        var out = [];
+        txt.split(';').forEach(function(seg){
+          var eq = seg.indexOf('='); if(eq < 0) return;
+          var key = seg.slice(0, eq).trim().replace(/^v_/, '');
+          var sid = back[key];
+          if(!sid) return;
+          var v = seg.slice(eq + 1).trim().replace(/^"/, '').replace(/"$/, '');
+          var a = v.split('~');
+          if(a.length < 35 || !a[1]) return;      /* 不支持的市场返回空壳,跳过 */
+          var q = txQuoteOf(a, sid);
+          if(q.f2 === null) return;
+          out.push(q);
+        });
+        return out;
+      });
+    })).then(function(lists){
+      var all = [];
+      lists.forEach(function(l){ all = all.concat(l); });
+      if(!all.length) throw new Error('腾讯源未返回有效数据');
+      return all;
+    });
+  }
+
+  /* ---------- 源 B:东财(覆盖最全,含日经225/韩国KOSPI) ----------
+     走 JSONP:不依赖对方 CORS 策略,兼容性最好;多节点串行降级。
+     实测 push2 主站最容易被封,92 节点更稳,故主站失败后立刻轮到它。 */
+  var EM_HOSTS = ['push2.eastmoney.com', '92.push2.eastmoney.com', 'push2delay.eastmoney.com'];
+  function jsonpGet(urlFactory, ms){
+    var limit = ms || 7000;
     return new Promise(function(resolve, reject){
       var cb = 'em_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
       var done = false;
@@ -1429,7 +1559,7 @@
           if(diff && diff.length){ finish(true, diff); } else { finish(false); }
         }catch(e){ finish(false); }
       };
-      var timer = setTimeout(function(){ finish(false); }, 7000);
+      var timer = setTimeout(function(){ finish(false); }, limit);
       var s = document.createElement('script');
       s.id = 'jsonp_' + cb;
       s.src = urlFactory(cb);
@@ -1437,51 +1567,124 @@
       document.head.appendChild(s);
     });
   }
-  function fetchIndices(){
-    setStatusShort('sync');
+  function fetchEastmoneyAt(host, secids){
+    return jsonpGet(function(cb){
+      return 'https://' + host + '/api/qt/ulist.np/get?fltt=2&secids=' + secids.join(',') +
+             '&fields=' + INDEX_FIELDS + '&cb=' + cb;
+    }, QUOTE_TIMEOUT).then(function(diff){
+      return diff.map(function(it){ it.src = 'em'; return it; });
+    });
+  }
+  function fetchEastmoney(secids){
+    var i = 0;
     return new Promise(function(resolve, reject){
-      var i = 0;
       (function next(){
-        if(i >= SOURCES.length){ reject(new Error('all sources failed')); return; }
-        jsonpGet(SOURCES[i].url).then(resolve, function(){ i++; next(); });
+        if(i >= EM_HOSTS.length){ reject(new Error('东财全部节点失败')); return; }
+        fetchEastmoneyAt(EM_HOSTS[i], secids).then(resolve, function(){ i++; next(); });
       })();
     });
   }
-  function renderIndices(list){
-    var box = $('indexList');
-    lastQuotes = (list && list.length) ? list : [];
-    if(!list || !list.length){
-      box.innerHTML = '<div class="empty" style="flex:0 0 100%">行情获取失败<br>已尝试 3 个数据源,请检查网络后点「刷新行情」重试</div>';
-      $('updateHint').textContent = '';
-      renderWatchQuotes([]);
-      if(curSec === 'overview') renderOverview();
-      return;
+
+  /* 双源并行:任一侧先回来就先把已有的画出来,后回来的做增量补齐 */
+  function fetchIndices(){
+    var secids = allSecids();
+    var txS = [], emS = [];
+    secids.forEach(function(s){ (txCodeOf(s) ? txS : emS).push(s); });
+    var acc = {}, painted = 0;
+
+    function absorb(list){
+      if(!list || !list.length) return;
+      list.forEach(function(q){ if(q && q.f12 !== undefined) acc[secidOf(q)] = q; });
+      var n = Object.keys(acc).length;
+      if(n <= painted) return;             /* 标的数没增加就不重画,避免闪两下 */
+      painted = n;
+      quoteFromCache = false;
+      setStatusShort('');
+      paintQuotes(acc, false);
     }
-    var indices = list.filter(isIndex);
-    renderWatchQuotes(list.filter(function(it){ return !isIndex(it); }));
-    var map = { '上证指数':'上证','深证成指':'深证','创业板指':'创业板','恒生指数':'恒生','恒生科技指数':'恒生科技','韩国KOSPI':'KOSPI','日经225':'日经225','科创50':'科创50','沪深300':'沪深300','北证50':'北证50' };
-    box.innerHTML = indices.map(function(it){
-      var name = it.f14 || '--';
-      var price = typeof it.f2 === 'number' ? it.f2 : null;
-      var chg = typeof it.f3 === 'number' ? it.f3 : null;
+
+    var jobs = [];
+    if(txS.length){
+      jobs.push(fetchTencent(txS).then(absorb, function(){
+        /* 腾讯整体不可用 → 东财顶上全量,保证还有数据 */
+        return fetchEastmoney(secids).then(absorb, function(){});
+      }));
+    }
+    if(emS.length){
+      /* 只补腾讯给不了的市场(通常就 2 个 secid),请求体极小 */
+      jobs.push(fetchEastmoney(emS).then(absorb, function(){}));
+    }
+    if(!jobs.length) jobs.push(fetchEastmoney(secids).then(absorb, function(){}));
+
+    return Promise.all(jobs).then(function(){ return acc; });
+  }
+  function paintQuotes(map, stale){
+    var arr = [];
+    Object.keys(map).forEach(function(k){ if(map[k]) arr.push(map[k]); });
+    lastQuotes = arr;
+    renderIndices(map, stale);
+  }
+  /* 把 secid→行情 的映射画出来。两个关键约束:
+     ① 指数卡片以 INDEX_SECIDS 为准逐个画,某个源没给也不能让卡片消失(只标「数据暂缺」);
+     ② 取数失败绝不清空画面 —— stale=true 时把快照时间标出来,让用户知道这不是实时值。 */
+  function renderIndices(map, stale){
+    var box = $('indexList');
+    map = map || {};
+    var idxIds = INDEX_SECIDS.split(',');
+    var miss = 0;
+
+    box.innerHTML = idxIds.map(function(sid){
+      var q = map[sid];
+      var codeTxt = esc(String(sid).split('.')[1] || '');
+      var fallbackName = INDEX_SHORT[INDEX_NAMES[sid]] || INDEX_NAMES[sid] || sid;
+      if(!q || typeof q.f2 !== 'number'){
+        miss++;
+        return '<div class="idx-card flat idx-miss">' +
+          '<div class="idx-name">' + esc(fallbackName) + '<span class="idx-code">' + codeTxt + '</span></div>' +
+          '<div class="idx-price flat">--</div>' +
+          '<div class="idx-chg flat">数据暂缺</div>' +
+          '</div>';
+      }
+      var name = q.f14 || INDEX_NAMES[sid] || sid;
+      var price = q.f2;
+      var chg = typeof q.f3 === 'number' ? q.f3 : null;
       var cls = chg === null ? 'flat' : (chg > 0 ? 'up' : (chg < 0 ? 'down' : 'flat'));
       var arrow = chg === null ? '—' : (chg > 0 ? '▲' : (chg < 0 ? '▼' : '■'));
       var chgTxt = chg === null ? '--' : ((chg >= 0 ? '+' : '') + chg.toFixed(2) + '%');
-      var amtTxt = (typeof it.f4 === 'number') ? ((it.f4 >= 0 ? '+' : '') + it.f4.toFixed(2)) : '';
+      var amtTxt = (typeof q.f4 === 'number') ? ((q.f4 >= 0 ? '+' : '') + q.f4.toFixed(2)) : '';
       var badge = chg === null ? '<span class="idx-badge b-flat">—</span>' : (chg > 0 ? '<span class="idx-badge b-up">涨</span>' : (chg < 0 ? '<span class="idx-badge b-down">跌</span>' : '<span class="idx-badge b-flat">平</span>'));
-      var range = (typeof it.f15 === 'number' && typeof it.f16 === 'number') ?
-        '<span>最高 <b>' + it.f15.toFixed(2) + '</b></span><span>最低 <b>' + it.f16.toFixed(2) + '</b></span>' : '';
+      var range = (typeof q.f15 === 'number' && typeof q.f16 === 'number') ?
+        '<span>最高 <b>' + q.f15.toFixed(2) + '</b></span><span>最低 <b>' + q.f16.toFixed(2) + '</b></span>' : '';
       return '<div class="idx-card ' + cls + '">' +
-        '<div class="idx-name">' + (map[name] || name) + '<span class="idx-code">' + (it.f12||'') + '</span></div>' +
-        '<div class="idx-price ' + cls + '">' + (price === null ? '--' : price.toFixed(2)) + '</div>' +
+        '<div class="idx-name">' + esc(INDEX_SHORT[name] || name) + '<span class="idx-code">' + codeTxt + '</span></div>' +
+        '<div class="idx-price ' + cls + '">' + price.toFixed(2) + '</div>' +
         '<div class="idx-chg ' + cls + '">' + arrow + ' ' + chgTxt + (amtTxt ? '<span class="amt">' + amtTxt + '</span>' : '') + badge + '</div>' +
         (range ? '<div class="idx-extra">' + range + '</div>' : '') +
         '</div>';
     }).join('');
+
+    /* 自选股报价(从同一份映射里挑出非指数的) */
+    var wq = [];
+    Object.keys(map).forEach(function(k){
+      var q = map[k];
+      if(q && q.f12 !== undefined && !isIndex(q)) wq.push(q);
+    });
+    renderWatchQuotes(wq);
+
     var now = new Date();
-    $('updateTime').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' 更新';
-    $('updateHint').textContent = 'A股·港股·亚太 · 30秒自动刷新';
-    var ih = $('idxHintTxt'); if(ih) ih.textContent = '左右滑动查看全部 ' + indices.length + ' 个指数';
+    if(stale && quoteAt){
+      var d0 = new Date(quoteAt);
+      var hhmm0 = String(d0.getHours()).padStart(2,'0') + ':' + String(d0.getMinutes()).padStart(2,'0');
+      var sameDay = d0.toDateString() === now.toDateString();
+      $('updateTime').textContent = (sameDay ? hhmm0 : ((d0.getMonth()+1) + '-' + d0.getDate() + ' ' + hhmm0)) + ' 快照';
+      $('updateHint').textContent = '实时行情暂时取不到,先显示最近一次成功的数据';
+    } else {
+      $('updateTime').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' 更新';
+      $('updateHint').textContent = miss
+        ? '部分市场数据暂缺(' + miss + ' 项),其余正常 · 30秒自动刷新'
+        : 'A股·港股·亚太 · 30秒自动刷新';
+    }
+    var ih = $('idxHintTxt'); if(ih) ih.textContent = '左右滑动查看全部 ' + idxIds.length + ' 个指数';
     if(curSec === 'overview') renderOverview();
   }
 
@@ -1508,29 +1711,33 @@
       box.innerHTML = '<div class="empty">还没有自选股' +
         '<button class="empty-cta" data-act="openadd">＋ 添加第一只自选</button>' +
         '<div class="empty-hint">添加后可设置成本价、止损止盈位与策略备注，还能关联复盘笔记</div></div>';
-      return;
+    } else {
+      box.innerHTML = list.map(function(w){
+        var sid = esc(w.secid);
+        var plan = w.plan ? '<span class="w-tag plan">' + esc(w.plan) + '</span>' : '';
+        var open = watchEdit === w.secid;
+        return '<li class="watch-item">' +
+          '<div class="row1">' +
+            '<span class="w-name"><b>' + esc(w.name) + '</b><i>' + esc(w.code) + '</i></span>' +
+            '<span class="w-price" id="wq_' + sid + '">--</span>' +
+            '<span class="w-chg" id="wc_' + sid + '">--</span>' +
+            '<button class="del" data-k="watch" data-i="' + sid + '">✕</button>' +
+          '</div>' +
+          '<div class="row2">' +
+            '<span class="w-tags">' + plan + '<span id="wd_' + sid + '"></span></span>' +
+            '<span class="w-acts">' +
+              '<button class="icon-btn" data-act="wnote" data-i="' + sid + '" title="关联该股复盘笔记">✎</button>' +
+              '<button class="w-cfg" data-act="wcfg" data-i="' + sid + '">' + (open ? '收起' : '设置') + '</button>' +
+            '</span>' +
+          '</div>' +
+          (open ? watchEditHTML(w) : '') +
+        '</li>';
+      }).join('');
     }
-    box.innerHTML = list.map(function(w){
-      var sid = esc(w.secid);
-      var plan = w.plan ? '<span class="w-tag plan">' + esc(w.plan) + '</span>' : '';
-      var open = watchEdit === w.secid;
-      return '<li class="watch-item">' +
-        '<div class="row1">' +
-          '<span class="w-name"><b>' + esc(w.name) + '</b><i>' + esc(w.code) + '</i></span>' +
-          '<span class="w-price" id="wq_' + sid + '">--</span>' +
-          '<span class="w-chg" id="wc_' + sid + '">--</span>' +
-          '<button class="del" data-k="watch" data-i="' + sid + '">✕</button>' +
-        '</div>' +
-        '<div class="row2">' +
-          '<span class="w-tags">' + plan + '<span id="wd_' + sid + '"></span></span>' +
-          '<span class="w-acts">' +
-            '<button class="icon-btn" data-act="wnote" data-i="' + sid + '" title="关联该股复盘笔记">✎</button>' +
-            '<button class="w-cfg" data-act="wcfg" data-i="' + sid + '">' + (open ? '收起' : '设置') + '</button>' +
-          '</span>' +
-        '</div>' +
-        (open ? watchEditHTML(w) : '') +
-      '</li>';
-    }).join('');
+    /* 重建列表会把价格重置成 --,这里立刻用最近一次行情快照回填。
+       否则 pageshow / 添加自选 / 删自选 等任何一次重建,都会把已经显示出来的报价擦掉 ——
+       表现为"先看到价格,过一下又全变成 --"。 */
+    if(lastQuotes && lastQuotes.length) renderWatchQuotes(lastQuotes);
   }
   function renderWatchQuotes(quotes){
     var list = store.get(KEYS.watch, []);
@@ -1684,16 +1891,100 @@
     setTimeout(upd, 400);
   })();
 
-  function loadIndices(){
-    fetchIndices().then(function(list){
-      renderIndices(list); setStatusShort('');
-    }).catch(function(){
-      renderIndices(null); setStatusShort('err');
-    });
+  /* ---------- 缓存与调度 ---------- */
+  function saveQuoteCache(map){
+    try{ localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify({ at: Date.now(), map: map })); }catch(e){}
   }
-  $('refreshBtn').addEventListener('click', function(){ loadIndices(); toast('正在刷新行情'); });
+  function loadQuoteCache(){
+    try{
+      var raw = localStorage.getItem(QUOTE_CACHE_KEY);
+      if(!raw) return null;
+      var o = JSON.parse(raw);
+      if(!o || !o.map || !Object.keys(o.map).length) return null;
+      if(o.at && Date.now() - o.at > 86400000) return null;   /* 超过一天的快照没有参考价值 */
+      return o;
+    }catch(e){ return null; }
+  }
+  /* 失败时:有旧数据就继续显示旧的(标明快照时间),绝不因为一次取数失败就把画面清空。
+     这是「经常获取不到数据」观感的根因 —— 原来失败直接把 lastQuotes 置空。 */
+  function showStaleQuotes(){
+    var map = null;
+    if(lastQuotes && lastQuotes.length){
+      map = {};
+      lastQuotes.forEach(function(q){ map[secidOf(q)] = q; });
+    } else {
+      var c = loadQuoteCache();
+      if(c){
+        map = c.map; quoteAt = c.at || 0;
+        lastQuotes = Object.keys(map).map(function(k){ return map[k]; });
+      }
+    }
+    if(map){
+      quoteFromCache = true;
+      renderIndices(map, true);
+      setStatusShort('stale');
+    } else {
+      $('indexList').innerHTML = '<div class="empty" style="flex:0 0 100%">行情暂时取不到<br>已尝试腾讯与东财多个数据源,稍后会自动重试</div>';
+      $('updateTime').textContent = '';
+      $('updateHint').textContent = '点「刷新行情」可立即重试';
+      renderWatchQuotes([]);
+      if(curSec === 'overview') renderOverview();
+      setStatusShort('err');
+    }
+  }
+  /* 打开页面先用上次快照把画面填上,再后台取实时 —— 避免"一打开是空的" */
+  function primeQuotesFromCache(){
+    var c = loadQuoteCache();
+    if(!c) return;
+    quoteAt = c.at || 0;
+    lastQuotes = Object.keys(c.map).map(function(k){ return c.map[k]; });
+    quoteFromCache = true;
+    renderIndices(c.map, true);
+    setStatusShort('stale');
+  }
+  function scheduleQuotes(){
+    clearTimeout(quoteTimer);
+    /* 连续失败就退避,别在取不到数时还按 30 秒死磕,那样只会把配额烧光 */
+    var delay = quoteStreak === 0 ? 30000 : (quoteStreak === 1 ? 60000 : 120000);
+    quoteTimer = setTimeout(function(){
+      if(document.hidden){ scheduleQuotes(); return; }   /* 页面在后台就不发请求 */
+      loadIndices();
+    }, delay);
+  }
+  function loadIndices(){
+    if(quoteInflight) return quoteInflight;              /* 单飞:多路触发只跑一轮 */
+    if(!lastQuotes.length) setStatusShort('sync');
+    quoteInflight = fetchIndices().then(function(acc){
+      quoteInflight = null;
+      if(Object.keys(acc).length){
+        quoteStreak = 0;
+        quoteAt = Date.now();
+        quoteFromCache = false;
+        setStatusShort('');
+        saveQuoteCache(acc);
+      } else {
+        quoteStreak++;
+        showStaleQuotes();
+      }
+      scheduleQuotes();
+      return acc;
+    });
+    return quoteInflight;
+  }
+  $('refreshBtn').addEventListener('click', function(){
+    quoteStreak = 0;
+    clearTimeout(quoteTimer);
+    loadIndices();
+    toast('正在刷新行情');
+  });
+  /* 回到前台时,只有数据确实陈旧才补一次;在后台一律停发 */
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden) return;
+    if(Date.now() - quoteAt > 30000) loadIndices();
+    else scheduleQuotes();
+  });
+  primeQuotesFromCache();
   loadIndices();
-  setInterval(loadIndices, 30000);
 
   /* ---- 股票笔记:结构化标签 + 个股关联 ---- */
   var NOTE_TAGS = ['情绪','操作','仓位','明日计划'];
