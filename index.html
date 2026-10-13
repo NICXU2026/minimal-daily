@@ -1424,9 +1424,12 @@
   /* ============ 行情取数:双源并行 ============
      为什么改成双源:东财 push2 有较硬的频控,实测连续请求会触发 IP 级封禁(20 分钟仍未恢复),
      三个节点又同属一家公司,一起挂就彻底没数。腾讯 qt.gtimg.cn 实测更快(0.16s vs 0.38s)、
-     更稳,覆盖 A股/港股/美股全部,只有日经225与韩国KOSPI 不提供。
+     更稳,A股/港股/美股/亚太指数都覆盖,只有日经225与韩国KOSPI 不提供。
      于是:腾讯取大头 + 东财只补它给不了的那几个 secid(请求体极小,不易被限流);
-     腾讯整体挂掉时,东财再顶上全量。两路并行,谁先回谁先出数,后回的做增量补齐。 */
+     腾讯整体挂掉时,东财再顶上全量。两路并行,谁先回谁先出数,后回的做增量补齐。
+     ⚠ 腾讯「覆盖美股」这件事有两种失败形态:代码拼错时它不报错,只回 pv_none_match;
+     所以第八轮补了两处 —— txCodeOf 正确拼 usSYMBOL(市场号 105/106/107),
+     以及 fetchIndices 里对腾讯回执做核对、少的标的再让东财补。 */
   var QUOTE_TIMEOUT = 6000;
   var QUOTE_CACHE_KEY = 'wb_quotes_cache';
   var quoteInflight = null;   /* 单飞:并发触发只跑一轮 */
@@ -1463,13 +1466,33 @@
     '100.HSI':'hkHSI', '124.HSTECH':'hkHSTECH'
     /* 100.KS11 / 100.N225 腾讯不提供 —— 这两个交给东财 */
   };
+  /* 美股指数:东财 100.x 与腾讯 usXXX 不同名,必须逐个对应。
+     ⚠ 东财 100.NDX 报的是「纳斯达克综合指数」(27245.90),对应腾讯 usIXIC;
+       纳斯达克100 是东财 100.NDX100 ↔ 腾讯 usNDX。配错会静默显示另一个指数的点位。 */
+  var TX_US = {
+    '100.DJIA':'usDJI', '100.DJI':'usDJI',
+    '100.SPX':'usINX', '100.INX':'usINX',
+    '100.NDX':'usIXIC', '100.IXIC':'usIXIC',
+    '100.NDX100':'usNDX'
+  };
+  /* 东财市场号:105 纳斯达克 / 106 纽交所 / 107 美交所 —— 这三个是「美股」,腾讯前缀是 us。
+     ⚠ 第八轮修正:旧代码把 105 一起算进 isHKMarket,于是美股被拼成 hkAAPL。
+       腾讯对无效代码返回 pv_none_match(不是报错,是「无此标的」),取数层把它过滤掉;
+       而它已经被错分进「腾讯组」,东财只补「腾讯给不了的 secid」,自然也不会去取它 ——
+       结果就是自选股里的美股长期停在 --,且两条路都安静地失败。 */
+  function isUSMarket(secid){
+    var m = String(secid).split('.')[0];
+    return m === '105' || m === '106' || m === '107';
+  }
+  /* 100 = 国际指数(恒生/日经/美股指数都在这个号下),116 = 港股,124 = 港股指数 */
   function isHKMarket(secid){
     var m = String(secid).split('.')[0];
-    return m === '100' || m === '105' || m === '116' || m === '124';
+    return m === '100' || m === '116' || m === '124';
   }
   /* secid → 腾讯代码;返回 null 表示腾讯不覆盖该标的 */
   function txCodeOf(secid){
     if(TX_INDEX[secid]) return TX_INDEX[secid];
+    if(TX_US[secid]) return TX_US[secid];
     /* 是已知指数但腾讯不覆盖(日经225/韩国KOSPI):必须明确返回 null 交给东财去补。
        不能落到下面的前缀推断 —— 否则会拼出 hkKS11 这种无效代码,
        还会把它错分进腾讯组,导致东财永远不去取,这两张卡就长期「数据暂缺」。 */
@@ -1479,22 +1502,39 @@
     var mkt = p[0], code = p[1];
     if(mkt === '1') return 'sh' + code;
     if(mkt === '0') return (/^[48]/.test(code) ? 'bj' : 'sz') + code;
+    if(isUSMarket(secid)) return 'us' + code.replace(/_/g, '.');   /* 东财 106.BRK_B ↔ 腾讯 usBRK.B */
     if(isHKMarket(secid)) return 'hk' + code;
     return null;
   }
   function numOf(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
+  /* 腾讯 [37] 成交额的单位并不统一(东财 f6 则一律是「元」),实测:
+       沪深个股 / 沪深指数 / 港股指数(HSI·HSTECH) → 万元,要 ×10000
+       港股个股 / 美股个股                        → 元,原样
+       美股指数                                   → 该位不是成交额,留空不给错数
+     单位错了不会报错,只会悄悄差 1e4 倍,所以按市场显式分流。 */
+  function txAmtOf(a, secid){
+    var amt = numOf(a[37]);
+    if(amt === null) return null;
+    if(TX_US[secid]) return null;
+    if(isUSMarket(secid)) return amt;
+    if(isHKMarket(secid)){
+      return /^\d+$/.test(String(secid).split('.')[1]) ? amt : amt * 10000;
+    }
+    return amt * 10000;
+  }
   function txQuoteOf(a, secid){
     var p = String(secid).split('.');
     var hk = isHKMarket(secid);
-    var amt = numOf(a[37]);
+    var us = isUSMarket(secid);
     return {
       f2: numOf(a[3]), f3: numOf(a[32]), f4: numOf(a[31]),
       f5: numOf(a[6]),
-      /* 东财 f6 单位是「元」,腾讯 [37] 给的是「万元」,必须换算否则差 1e4 倍 */
-      f6: amt === null ? null : amt * 10000,
-      /* 港股没有换手率,[49] 在港股也不是量比 —— 宁可留空,不给错数 */
+      f6: txAmtOf(a, secid),
+      /* 港股没有换手率;[49] 在港股/美股都是 52 周低点而非量比 ——
+         宁可留空,也不要把 22518 这种点位当成「放量 22518 倍」推给用户。
+         美股 [38] 是真实换手率(AAPL 0.18 与东财 f8 一致),保留。 */
       f8: hk ? null : numOf(a[38]),
-      f10: hk ? null : numOf(a[49]),
+      f10: (hk || us) ? null : numOf(a[49]),
       f12: p[1], f13: parseInt(p[0], 10),
       f14: a[1] || '', f15: numOf(a[33]), f16: numOf(a[34]),
       f17: numOf(a[5]), f18: numOf(a[4]),
@@ -1585,12 +1625,15 @@
     });
   }
 
-  /* 双源并行:任一侧先回来就先把已有的画出来,后回来的做增量补齐 */
+  /* 双源并行:任一侧先回来就先把已有的画出来,后回来的做增量补齐。
+     外加一道「回执核对」:腾讯组里没回数据的标的,再交给东财补一次。
+     没有这道核对时,「被错分进腾讯组 + 腾讯不认这个代码」= 两边都不取,静默停在 --。 */
   function fetchIndices(){
     var secids = allSecids();
     var txS = [], emS = [];
     secids.forEach(function(s){ (txCodeOf(s) ? txS : emS).push(s); });
-    var acc = {}, painted = 0;
+    var acc = {}, painted = 0, asked = {};
+    emS.forEach(function(s){ asked[s] = 1; });
 
     function absorb(list){
       if(!list || !list.length) return;
@@ -1603,10 +1646,22 @@
       paintQuotes(acc, false);
     }
 
+    /* 腾讯已回但没给到的标的 → 东财再补一次(正常情况是 0 个,请求体极小) */
+    function topUp(){
+      var missing = secids.filter(function(s){ return !acc[s] && !asked[s]; });
+      if(!missing.length) return Promise.resolve();
+      missing.forEach(function(s){ asked[s] = 1; });
+      return fetchEastmoney(missing).then(absorb, function(){});
+    }
+
     var jobs = [];
     if(txS.length){
-      jobs.push(fetchTencent(txS).then(absorb, function(){
+      jobs.push(fetchTencent(txS).then(function(list){
+        absorb(list);
+        return topUp();
+      }, function(){
         /* 腾讯整体不可用 → 东财顶上全量,保证还有数据 */
+        secids.forEach(function(s){ asked[s] = 1; });
         return fetchEastmoney(secids).then(absorb, function(){});
       }));
     }
@@ -1614,7 +1669,10 @@
       /* 只补腾讯给不了的市场(通常就 2 个 secid),请求体极小 */
       jobs.push(fetchEastmoney(emS).then(absorb, function(){}));
     }
-    if(!jobs.length) jobs.push(fetchEastmoney(secids).then(absorb, function(){}));
+    if(!jobs.length){
+      secids.forEach(function(s){ asked[s] = 1; });
+      jobs.push(fetchEastmoney(secids).then(absorb, function(){}));
+    }
 
     return Promise.all(jobs).then(function(){ return acc; });
   }
@@ -1682,7 +1740,7 @@
       $('updateTime').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ' 更新';
       $('updateHint').textContent = miss
         ? '部分市场数据暂缺(' + miss + ' 项),其余正常 · 30秒自动刷新'
-        : 'A股·港股·亚太 · 30秒自动刷新';
+        : 'A股·港股·美股·亚太 · 30秒自动刷新';
     }
     var ih = $('idxHintTxt'); if(ih) ih.textContent = '左右滑动查看全部 ' + idxIds.length + ' 个指数';
     if(curSec === 'overview') renderOverview();
@@ -1846,6 +1904,10 @@
     toast('已添加 ' + item.name);
     loadIndices();
   }
+  /* 东财 suggest 的 Classify 实测取值:AStock / HK / UsStock / UniversalIndex / Fund / BK …
+     ⚠ 旧代码按 HKStock / Index / ETF 去匹配 —— 这三个值根本不存在,
+     于是除了 A股,美股港股指数基金全被标成「其他」。 */
+  var SG_TYPES = { AStock:'A股', HK:'港股', UsStock:'美股', UniversalIndex:'指数', Fund:'基金', BK:'板块', Bond:'债券' };
   function doWatchSearch(){
     var kw = $('watchKw').value.trim();
     var box = $('watchSuggest');
@@ -1854,7 +1916,7 @@
     searchStock(kw).then(function(items){
       if(!items.length){ box.innerHTML = '<li class="sg-empty">未找到相关标的,换个关键词试试</li>'; return; }
       box.innerHTML = items.map(function(it){
-        var t = it.Classify === 'AStock' ? 'A股' : (it.Classify === 'HKStock' ? '港股' : (it.Classify === 'Index' ? '指数' : (it.Classify === 'ETF' ? 'ETF' : '其他')));
+        var t = SG_TYPES[it.Classify] || it.SecurityTypeName || '其他';
         return '<li data-secid="' + esc(it.QuoteID) + '" data-name="' + esc(it.Name) + '" data-code="' + esc(it.Code) + '">' +
           '<span class="nm"><b>' + esc(it.Name) + '</b><i>' + esc(it.Code) + '</i></span>' +
           '<span class="tag">' + t + '</span></li>';
