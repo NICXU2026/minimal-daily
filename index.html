@@ -460,6 +460,22 @@
     padding:7px 16px;font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;
   }
   .sync-row button:active{transform:scale(.95);border-color:var(--ink-3)}
+  .sync-row button:disabled{opacity:.4;cursor:default}
+  /* ---- 每日自动备份 ---- */
+  .abak-state{font-size:10.5px;color:var(--ink-3);line-height:1.7;margin-top:10px;letter-spacing:.2px}
+  .abak-state b{color:var(--ink);font-weight:700}
+  .abak-state.warn{color:var(--up)}
+  .abak-state.warn b{color:var(--up)}
+  .abak-list{margin-top:11px;border-top:1px dashed var(--line-2)}
+  .abak-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .abak-item:last-child{border-bottom:0}
+  .abak-item .d{font-size:11.5px;color:var(--ink);letter-spacing:.3px;font-variant-numeric:tabular-nums}
+  .abak-item .s{font-size:10px;color:var(--ink-3);margin-left:auto;letter-spacing:.2px}
+  .abak-item button{
+    border:1px solid var(--line-2);background:transparent;color:var(--ink-2);border-radius:7px;
+    padding:3px 9px;font-size:10.5px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;
+  }
+  .abak-item button:active{transform:scale(.95);border-color:var(--ink-3)}
   .foot-note{letter-spacing:1px}
   .toast{
     position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(10px);background:rgba(23,23,28,.92);color:#fff;
@@ -1111,6 +1127,17 @@
         </div>
 
         <div class="card" style="margin-top:10px">
+          <div class="note-head"><span class="t">每日自动备份</span></div>
+          <div class="sync-tip" style="margin:0 0 9px">选一个本机文件夹，工作台每天首次打开时自动写入一份 JSON 备份，不用再手动导出。</div>
+          <div class="sync-row" style="margin-bottom:0">
+            <button id="abakPick">选择备份文件夹</button>
+            <button id="abakNow">立即备份</button>
+          </div>
+          <div class="abak-state" id="abakState">未开启</div>
+          <div class="abak-list" id="abakList" hidden></div>
+        </div>
+
+        <div class="card" style="margin-top:10px">
           <div class="note-head"><span class="t">记账偏好</span></div>
           <div class="sync-tip" style="margin:0 0 9px">设置月度支出预算后,记账页会显示预算进度与超支提醒。</div>
           <div class="budget-set">
@@ -1205,6 +1232,7 @@
     $('topTitle').textContent = TITLES[sec];
     $('stockStatus').style.display = sec === 'stock' ? 'inline-flex' : 'none';
     if(sec === 'overview') renderOverview();
+    if(sec === 'settings') abakRefreshList();   /* 进设置页才去列目录,打开页面时不额外读写 */
     var sc = document.querySelector('.panes'); if(sc) sc.scrollTop = 0;   // 切模块时回到顶部
   }
   document.querySelector('.sb-nav').addEventListener('click', function(e){
@@ -3223,38 +3251,266 @@
     toast('备份文件已导出,请妥善保存');
   });
   $('importBtn').addEventListener('click', function(){ $('importFile').click(); });
+  /* 导入与「从备份文件夹恢复」共用这一份落库逻辑 */
+  function applyBackupData(d){
+    if(!d || d.app !== 'minimal-daily') throw new Error('format');
+    if(Array.isArray(d.bills)) store.set(KEYS.bills, d.bills);
+    if(Array.isArray(d.meals)) store.set(KEYS.meals, d.meals);
+    if(Array.isArray(d.ideas)) store.set(KEYS.ideas, d.ideas);
+    if(Array.isArray(d.notes)) store.set(KEYS.notes, d.notes);
+    if(Array.isArray(d.teas)) store.set(KEYS.teas, d.teas);
+    if(Array.isArray(d.watch)) store.set(KEYS.watch, d.watch);
+    if(Array.isArray(d.todos)) store.set(KEYS.todos, d.todos);
+    if(Array.isArray(d.studies)) store.set(KEYS.studies, d.studies);
+    if(Array.isArray(d.meds)) store.set(KEYS.meds, d.meds);
+    if(typeof d.budget === 'number' && d.budget > 0) store.set(KEYS.budget, d.budget);
+    /* 计划生成记录跟着备份走,否则换设备后会把已生成的天数再生成一遍 */
+    if(Array.isArray(d.planGen)) store.set(PLAN_KEY, d.planGen);
+    /* 顺带补上原先漏掉的饮食 / 茶饮总结刷新,导入后各卡片数字才不会停在上一次渲染 */
+    renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderMealSummary(); renderWatchList();
+    renderTeaToday(); renderTeaHistory(); renderTeaSummary();
+    renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary(); renderPlanCard();
+    renderMedToday(); renderMedHistory(); renderMedSummary();
+    renderBudgetSetting(); renderOverview();
+    loadIndices();
+    markChanged();
+  }
   $('importFile').addEventListener('change', function(e){
     var f = e.target.files && e.target.files[0]; if(!f) return;
     var r = new FileReader();
     r.onload = function(){
       try{
-        var d = JSON.parse(r.result);
-        if(!d || d.app !== 'minimal-daily') throw new Error('format');
-        if(Array.isArray(d.bills)) store.set(KEYS.bills, d.bills);
-        if(Array.isArray(d.meals)) store.set(KEYS.meals, d.meals);
-        if(Array.isArray(d.ideas)) store.set(KEYS.ideas, d.ideas);
-        if(Array.isArray(d.notes)) store.set(KEYS.notes, d.notes);
-        if(Array.isArray(d.teas)) store.set(KEYS.teas, d.teas);
-        if(Array.isArray(d.watch)) store.set(KEYS.watch, d.watch);
-        if(Array.isArray(d.todos)) store.set(KEYS.todos, d.todos);
-        if(Array.isArray(d.studies)) store.set(KEYS.studies, d.studies);
-        if(Array.isArray(d.meds)) store.set(KEYS.meds, d.meds);
-        if(typeof d.budget === 'number' && d.budget > 0) store.set(KEYS.budget, d.budget);
-        /* 计划生成记录跟着备份走,否则换设备后会把已生成的天数再生成一遍 */
-        if(Array.isArray(d.planGen)) store.set(PLAN_KEY, d.planGen);
-        /* 顺带补上原先漏掉的饮食 / 茶饮总结刷新,导入后各卡片数字才不会停在上一次渲染 */
-        renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderMealSummary(); renderWatchList();
-        renderTeaToday(); renderTeaHistory(); renderTeaSummary();
-        renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary(); renderPlanCard();
-        renderMedToday(); renderMedHistory(); renderMedSummary();
-        renderBudgetSetting(); renderOverview();
-        loadIndices();
+        applyBackupData(JSON.parse(r.result));
         toast('导入成功,数据已恢复');
-        markChanged();
       }catch(err){ toast('备份文件格式不正确'); }
     };
     r.readAsText(f);
     e.target.value = '';
+  });
+
+  /* ================= 每日自动备份:写入本机文件夹 ================= */
+  /* 用 File System Access API 直接落盘。授权一次之后,每天首次打开工作台会自动
+     写一份 minimal-daily-YYYY-MM-DD.json;同一天再次打开不重复写(「立即备份」可覆盖当天)。
+     浏览器的硬限制:requestPermission 必须由用户手势触发,所以权限一旦降级为 prompt
+     就无法真正静默,此时设置页会给出提示,并借用户的下一次点击顺手补授权。 */
+  var ABAK_KEY = 'wb_autobak';         /* { name:'文件夹名', lastDate:'YYYY-MM-DD', lastAt:ts } */
+  var ABAK_PREFIX = 'minimal-daily-';
+  var ABAK_KEEP = 30;                  /* 目录里最多留 30 份 */
+  var abakFiles = [], abakNeedAuth = false, abakBusy = false, abakArmed = false, abakIdb = null;
+
+  function abakSupported(){
+    return typeof window.showDirectoryPicker === 'function' && typeof window.indexedDB !== 'undefined';
+  }
+  function abakMeta(){ try{ return JSON.parse(localStorage.getItem(ABAK_KEY)) || {}; }catch(e){ return {}; } }
+  function abakSaveMeta(m){ try{ localStorage.setItem(ABAK_KEY, JSON.stringify(m)); }catch(e){} }
+  function abakHm(ts){ var d = new Date(ts); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); }
+  function abakSize(n){ return n >= 1048576 ? (n/1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n/1024)) + ' KB'; }
+
+  /* ---- IndexedDB:目录句柄没法塞进 localStorage,只能存这里 ---- */
+  function abakDb(){
+    if(abakIdb) return abakIdb;
+    abakIdb = new Promise(function(res, rej){
+      var req = indexedDB.open('minimal-daily', 1);
+      req.onupgradeneeded = function(){ if(!req.result.objectStoreNames.contains('kv')) req.result.createObjectStore('kv'); };
+      req.onsuccess = function(){ res(req.result); };
+      req.onerror = function(){ rej(req.error); };
+    });
+    return abakIdb;
+  }
+  function abakIdbSet(k, v){
+    return abakDb().then(function(db){
+      return new Promise(function(res, rej){
+        var tx = db.transaction('kv', 'readwrite');
+        tx.objectStore('kv').put(v, k);
+        tx.oncomplete = function(){ res(v); };
+        tx.onerror = function(){ rej(tx.error); };
+      });
+    });
+  }
+  function abakIdbGet(k){
+    return abakDb().then(function(db){
+      return new Promise(function(res, rej){
+        var tx = db.transaction('kv', 'readonly');
+        var r = tx.objectStore('kv').get(k);
+        r.onsuccess = function(){ res(r.result || null); };
+        r.onerror = function(){ rej(r.error); };
+      });
+    }).catch(function(){ return null; });
+  }
+
+  /* 已有权限就直接用;没有则请求(必须在用户手势内调用) */
+  async function abakEnsure(h){
+    try{
+      var p = await h.queryPermission({ mode:'readwrite' });
+      if(p === 'granted') return p;
+      return await h.requestPermission({ mode:'readwrite' });
+    }catch(e){ return 'denied'; }
+  }
+  async function abakWrite(h){
+    var body = JSON.stringify(collectData(), null, 2);
+    var fh = await h.getFileHandle(ABAK_PREFIX + todayStr() + '.json', { create:true });
+    var wr = await fh.createWritable();
+    await wr.write(body);
+    await wr.close();
+    var m = abakMeta(); m.name = h.name; m.lastDate = todayStr(); m.lastAt = Date.now();
+    abakSaveMeta(m);
+    await abakClean(h);
+    return body.length;
+  }
+  async function abakClean(h){
+    try{
+      var names = [], ent;
+      for await (ent of h.entries()){
+        if(ent[0].indexOf(ABAK_PREFIX) === 0 && /\.json$/.test(ent[0])) names.push(ent[0]);
+      }
+      names.sort();
+      while(names.length > ABAK_KEEP){ await h.removeEntry(names.shift()); }
+    }catch(e){}
+  }
+  async function abakList(h){
+    var out = [], ent;
+    for await (ent of h.entries()){
+      var n = ent[0];
+      if(n.indexOf(ABAK_PREFIX) !== 0 || !/\.json$/.test(n)) continue;
+      var size = 0;
+      try{ size = (await ent[1].getFile()).size; }catch(e){}
+      out.push({ name:n, date:n.slice(ABAK_PREFIX.length, -5), size:size });
+    }
+    out.sort(function(a, b){ return a.date < b.date ? 1 : -1; });
+    return out;
+  }
+
+  function abakRender(){
+    var st = $('abakState'), box = $('abakList');
+    if(!st) return;
+    if(!abakSupported()){
+      st.className = 'abak-state warn';
+      st.innerHTML = '当前浏览器不支持自动备份。请用电脑版 Chrome / Edge 打开本页,或继续用上方「导出数据备份」手动保存。';
+      if(box){ box.hidden = true; box.innerHTML = ''; }
+      ['abakPick','abakNow'].forEach(function(id){ var b = $(id); if(b) b.disabled = true; });
+      return;
+    }
+    var m = abakMeta(), today = todayStr();
+    st.className = 'abak-state' + (abakNeedAuth ? ' warn' : '');
+    if(!m.name){
+      st.innerHTML = '未开启 · 选一个文件夹后,每天首次打开自动写入备份';
+    }else{
+      var s = '已连接 <b>' + esc(m.name) + '</b> · ';
+      s += (m.lastDate === today)
+        ? '今天 ' + abakHm(m.lastAt || Date.now()) + ' 已备份'
+        : '今天还没备份';
+      if(abakNeedAuth) s += ' · <b>需点一次「立即备份」恢复授权</b>';
+      else if(abakFiles.length > 1) s += ' · 目录共 ' + abakFiles.length + ' 份';
+      st.innerHTML = s;
+    }
+    if(box){
+      if(!abakFiles.length){ box.hidden = true; box.innerHTML = ''; }
+      else{
+        box.hidden = false;
+        box.innerHTML = abakFiles.slice(0, 5).map(function(f){
+          return '<div class="abak-item"><span class="d">' + esc(f.date) + '</span>' +
+                 '<span class="s">' + abakSize(f.size) + '</span>' +
+                 '<button data-abak="' + esc(f.name) + '">恢复</button></div>';
+        }).join('');
+      }
+    }
+  }
+  async function abakRefreshList(){
+    if(!abakSupported()){ abakRender(); return; }
+    var h = await abakIdbGet('bakDir');
+    if(!h){ abakRender(); return; }
+    abakFiles = await abakList(h).catch(function(){ return []; });
+    abakRender();
+  }
+
+  /* 打开页面时跑一次:今天还没备份才写,失败不打扰用户,只改状态文案 */
+  async function abakTick(){
+    if(!abakSupported()){ abakRender(); return; }
+    var h = await abakIdbGet('bakDir');
+    if(!h){ abakRender(); return; }
+    var m = abakMeta();
+    if(m.lastDate === todayStr() && !abakNeedAuth){ abakRender(); return; }
+    var p;
+    try{ p = await h.queryPermission({ mode:'readwrite' }); }catch(e){ p = 'denied'; }
+    if(p !== 'granted'){ abakNeedAuth = true; abakArmRetry(); abakRender(); return; }
+    try{
+      await abakWrite(h);
+      abakNeedAuth = false;
+      abakFiles = await abakList(h).catch(function(){ return abakFiles; });
+    }catch(e){
+      /* 写入失败只在「权限/安全」类错误时才提示重新授权;
+         文件被占用、磁盘满之类不该误导用户去点授权 */
+      abakNeedAuth = /NotAllowed|Security/i.test((e && e.name) || '');
+    }
+    abakRender();
+  }
+
+  /* 权限降级时,借用户的下一次点击补授权,尽量做到"无感" */
+  function abakArmRetry(){
+    if(abakArmed) return;
+    abakArmed = true;
+    document.addEventListener('pointerdown', function once(){
+      document.removeEventListener('pointerdown', once);
+      abakArmed = false;
+      if(abakNeedAuth && !abakBusy) abakRunBackup(true);
+    }, { once:true });
+  }
+
+  /* auto=true 表示由 tick 顺带触发,成功文案弱化为一次提示 */
+  async function abakRunBackup(auto){
+    if(!abakSupported() || abakBusy) return;
+    abakBusy = true;
+    try{
+      var h = await abakIdbGet('bakDir');
+      if(!h){ if(!auto) toast('请先选择备份文件夹'); return; }
+      var p = await abakEnsure(h);
+      if(p !== 'granted'){ abakNeedAuth = true; abakRender(); if(!auto) toast('未获得该文件夹的写入权限'); return; }
+      abakNeedAuth = false;
+      await abakWrite(h);
+      abakFiles = await abakList(h).catch(function(){ return abakFiles; });
+      abakRender();
+      toast('已备份 ' + todayStr() + '.json');
+    }catch(e){
+      var nm = (e && e.name) || '';
+      abakNeedAuth = /NotAllowed|Security/i.test(nm);
+      abakRender();
+      if(!auto) toast('备份失败:' + (/NotAllowed|Security/i.test(nm) ? '文件夹权限已失效,请重新选择' : ((e && e.message) || '无法写入该文件夹')));
+    }finally{ abakBusy = false; }
+  }
+
+  async function abakPickDir(){
+    if(!abakSupported()) return;
+    var h = null;
+    try{
+      h = await window.showDirectoryPicker({ id:'minimal-daily-bak', mode:'readwrite', startIn:'documents' });
+    }catch(e){ return; }
+    if(!h) return;
+    var p = await abakEnsure(h);
+    if(p !== 'granted'){ toast('未获得该文件夹的写入权限'); return; }
+    try{ await abakIdbSet('bakDir', h); }catch(e){ toast('无法记住该文件夹,请重试'); return; }
+    abakNeedAuth = false;
+    var m = abakMeta(); m.name = h.name; abakSaveMeta(m);
+    await abakRunBackup(false);
+    abakFiles = await abakList(h).catch(function(){ return []; });
+    abakRender();
+  }
+
+  async function abakRestore(name){
+    var h = await abakIdbGet('bakDir');
+    if(!h) return toast('备份文件夹未连接');
+    try{
+      var fh = await h.getFileHandle(name);
+      var text = await (await fh.getFile()).text();
+      applyBackupData(JSON.parse(text));
+      toast('已从 ' + name.replace(ABAK_PREFIX, '').replace('.json', '') + ' 恢复');
+    }catch(e){ toast('恢复失败:' + ((e && e.message) || '读取错误')); }
+  }
+
+  if($('abakPick')) $('abakPick').addEventListener('click', abakPickDir);
+  if($('abakNow')) $('abakNow').addEventListener('click', function(){ abakRunBackup(false); });
+  if($('abakList')) $('abakList').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-abak]'); if(!b) return;
+    abakRestore(b.getAttribute('data-abak'));
   });
 
   /* ================= 记账偏好:月预算 ================= */
@@ -3694,10 +3950,13 @@
   renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary(); renderPlanCard();
   renderMedToday(); renderMedHistory(); renderMedSummary();
   renderBudgetSetting();
+  abakRender();                  // 状态文案先出,失败不影响其它模块
+  abakTick();                    // 每天首次打开写一份自动备份
   switchTo('overview');          // 默认打开今日概览(行情就绪后异动会自动刷新)
   window.addEventListener('pageshow', function(){
     /* 手机上从后台切回来常常已跨天,这里再补一次生成 */
     planEnsure();
+    abakTick();
     renderBills(); renderIdeas(); renderStockNotes(); renderMealHistory(); renderMealSummary();
     renderTeaToday(); renderTeaHistory(); renderTeaSummary(); renderWatchList();
     renderWorkList(); renderWorkSummary(); renderStudyList(); renderStudySummary(); renderPlanCard();
